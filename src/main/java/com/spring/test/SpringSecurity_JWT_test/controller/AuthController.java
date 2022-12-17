@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/bank/auth")
 public class AuthController {
@@ -58,8 +57,6 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
-        System.out.println("Comm Test");
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
