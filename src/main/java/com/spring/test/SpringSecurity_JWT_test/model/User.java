@@ -2,11 +2,14 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+//@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
@@ -17,21 +20,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     private String username;
-
-
     private String email;
-
-
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles",
+    @ManyToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+@JsonManagedReference
+     private UserDetail userDetail;
 
     public User() {
     }
@@ -80,5 +81,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public UserDetail getUserDetail() {
+        return userDetail;
+    }
+
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
     }
 }

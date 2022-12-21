@@ -1,8 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
+
 import com.spring.test.SpringSecurity_JWT_test.model.ERole;
 import com.spring.test.SpringSecurity_JWT_test.model.Role;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
+import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
@@ -11,6 +13,7 @@ import com.spring.test.SpringSecurity_JWT_test.repository.RoleRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.JwtUtils;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
+import com.spring.test.SpringSecurity_JWT_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,6 +47,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest) {
 
@@ -66,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser( @RequestBody User signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -84,17 +90,17 @@ public class AuthController {
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-
         Set<Role> roles = new HashSet<>();
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         user.setRoles(roles);
-        userRepository.save(user);
 
-        return ResponseEntity.ok("OK");
+        UserDetail userDetail = signUpRequest.getUserDetail();
+        user.setUserDetail(userDetail);
+        userService.saveUser(user);
+
+        return ResponseEntity.ok("ok");
     }
 
-
-
-    }
+}
