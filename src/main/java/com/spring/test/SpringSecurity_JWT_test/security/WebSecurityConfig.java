@@ -68,7 +68,7 @@ public class WebSecurityConfig {
             CorsConfigurationSource cs = r ->{
 
                 CorsConfiguration cc = new CorsConfiguration();
-                cc.setAllowedOrigins(List.of("http://localhost:3000/**"));
+                cc.setAllowedOrigins(List.of("http://localhost:3000"));
                 cc.setAllowedMethods(List.of("GET", "POST", "DELETE"));
 
                 return cc;
@@ -81,6 +81,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/bank/auth/**").permitAll()
                 .antMatchers("/bank/test/**").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());
