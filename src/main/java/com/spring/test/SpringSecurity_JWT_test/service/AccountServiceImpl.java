@@ -1,0 +1,28 @@
+package com.spring.test.SpringSecurity_JWT_test.service;
+
+import com.spring.test.SpringSecurity_JWT_test.model.Account;
+import com.spring.test.SpringSecurity_JWT_test.model.User;
+import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
+import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AccountServiceImpl implements AccountService{
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    public Account saveAccount(Account account){
+        String email = account.getUser().getEmail();
+
+        User user = userRepository.findByEmail(email);
+        account.setUser(user);
+
+        account = accountRepository.save(account);
+        return account;
+    }
+}

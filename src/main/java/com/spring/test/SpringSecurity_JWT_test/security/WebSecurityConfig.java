@@ -82,6 +82,7 @@ public class WebSecurityConfig {
                 .authorizeRequests().antMatchers("/bank/auth/**").permitAll()
                 .antMatchers("/bank/test/**").permitAll()
                 .antMatchers("/user/**").permitAll()
+                .antMatchers("/accounts/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

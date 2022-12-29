@@ -2,7 +2,6 @@ package com.spring.test.SpringSecurity_JWT_test.service;
 
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
-
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
