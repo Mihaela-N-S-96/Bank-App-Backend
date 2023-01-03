@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
+@Entity(name = "accounts")
 @Table(name = "accounts")
 public class Account {
 
@@ -16,9 +16,14 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String type_of_plan;
+    @Column(name="savings")
     private Float savings;
+
     private Float currency_balance;
     private Date created_at;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long user_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

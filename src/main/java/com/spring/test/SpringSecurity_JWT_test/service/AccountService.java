@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 public interface AccountService {
 
     public Account saveAccount(Account account);
+    public void updateSavingsAccount(Float savings, Long id);
 }

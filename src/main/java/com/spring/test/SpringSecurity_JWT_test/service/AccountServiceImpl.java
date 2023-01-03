@@ -7,6 +7,8 @@ import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class AccountServiceImpl implements AccountService{
 
@@ -24,5 +26,10 @@ public class AccountServiceImpl implements AccountService{
 
         account = accountRepository.save(account);
         return account;
+    }
+
+    @Transactional
+    public void updateSavingsAccount(Float savings, Long id){
+        accountRepository.updateSavingsAccount(savings, id);
     }
 }

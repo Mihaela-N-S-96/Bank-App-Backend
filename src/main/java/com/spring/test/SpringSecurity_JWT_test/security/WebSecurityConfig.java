@@ -69,7 +69,7 @@ public class WebSecurityConfig {
 
                 CorsConfiguration cc = new CorsConfiguration();
                 cc.setAllowedOrigins(List.of("http://localhost:3000"));
-                cc.setAllowedMethods(List.of("GET", "POST", "DELETE"));
+                cc.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH"));
 
                 return cc;
             };

@@ -21,8 +21,8 @@ public class AccountController {
     }
 
     @PatchMapping("/savings")
-    public void addToSavings(@RequestParam Float savings, @RequestBody User user){
-
+    public void addToSavings(@RequestParam Float savings, @RequestParam Long id){
+        accountService.updateSavingsAccount(savings, id);
     }
 
 }
