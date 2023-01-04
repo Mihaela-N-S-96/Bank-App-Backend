@@ -1,12 +1,9 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "accounts")
 @Table(name = "accounts")
@@ -15,11 +12,15 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name="type_of_plan")
     private String type_of_plan;
     @Column(name="savings")
     private Float savings;
 
+    @Column(name="currency_balance")
     private Float currency_balance;
+
+    @Column(name="created_at")
     private Date created_at;
 
     @Column(name = "user_id", insertable = false, updatable = false)
@@ -30,7 +31,11 @@ public class Account {
     @JsonIgnoreProperties("accounts")
     private User user;
 
-    public Account(){}
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
+    private List<Loan> loans = new ArrayList<>();
+
+//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+//    private List<Withdrawal> withdrawals = new ArrayList<>();
 
     public Account(Long id, String type_of_plan, Float savings, Float currency_balance, Date created_at) {
         this.id = id;
@@ -39,6 +44,8 @@ public class Account {
         this.currency_balance = currency_balance;
         this.created_at = created_at;
     }
+
+public Account(){}
 
 
     public Long getId() {
@@ -88,4 +95,30 @@ public class Account {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
+    }
+
+//    public List<Withdrawal> getWithdrawals() {
+//        return withdrawals;
+//    }
+//
+//    public void setWithdrawals(List<Withdrawal> withdrawals) {
+//        this.withdrawals = withdrawals;
+//    }
+
+
 }

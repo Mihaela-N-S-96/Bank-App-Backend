@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService{
@@ -28,8 +29,20 @@ public class AccountServiceImpl implements AccountService{
         return account;
     }
 
+    public Optional<Account> findById(Long id){
+
+        Optional<Account> account = accountRepository.findById(id);
+        return account;
+    }
+
     @Transactional
     public void updateSavingsAccount(Float savings, Long id){
         accountRepository.updateSavingsAccount(savings, id);
     }
+
+    @Transactional
+    public void decreasesWithdrawalFromBalance(Float withdrawal, Long id){
+        accountRepository.decreasesWithdrawalFromBalance(withdrawal, id);
+    }
+
 }
