@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface WithdrawalService {
 
-    public Withdrawal saveWithdrawal(Withdrawal withdrawal, Long id);
+    public Withdrawal saveWithdrawal(Withdrawal withdrawal, Integer id);
 }

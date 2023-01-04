@@ -14,7 +14,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Float loan;
+    private Double loan;
     private String details;
 
     private Date date;
@@ -35,11 +35,11 @@ public class Loan {
         this.id = id;
     }
 
-    public Float getLoan() {
+    public Double getLoan() {
         return loan;
     }
 
-    public void setLoan(Float loan) {
+    public void setLoan(Double loan) {
         this.loan = loan;
     }
 

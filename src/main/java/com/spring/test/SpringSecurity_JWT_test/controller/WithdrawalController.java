@@ -18,7 +18,7 @@ public class WithdrawalController {
 
 
     @PatchMapping("/withdrawal")
-    public Withdrawal addWithdrawal(@RequestBody Withdrawal withdrawal, @RequestParam Long id){
+    public Withdrawal addWithdrawal(@RequestBody Withdrawal withdrawal, @RequestParam Integer id){
 
         withdrawal = withdrawalService.saveWithdrawal(withdrawal, id);
 

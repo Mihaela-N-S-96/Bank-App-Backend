@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Component
 public interface LoanService  {
-    public Loan saveLoan(Loan loan, Long id);
+    public Loan saveLoan(Loan loan, Integer id);
 }

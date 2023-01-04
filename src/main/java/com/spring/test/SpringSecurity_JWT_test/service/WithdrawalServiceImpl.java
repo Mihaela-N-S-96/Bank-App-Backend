@@ -20,8 +20,8 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     private AccountRepository accountRepository;
 
     @Transactional
-    public Withdrawal saveWithdrawal(Withdrawal withdrawal, Long id){
-        accountRepository.decreasesWithdrawalFromBalance(withdrawal.getWithdrawal(), id);
+    public Withdrawal saveWithdrawal(Withdrawal withdrawal, Integer id){
+        accountRepository.decreasesValueFromBalance(withdrawal.getWithdrawal(), id);
 
         Optional<Account> account = accountRepository.findById(id);
         withdrawal.setAccount(account.get());

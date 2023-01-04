@@ -11,20 +11,20 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     @Column(name="type_of_plan")
     private String type_of_plan;
     @Column(name="savings")
     private Float savings;
 
     @Column(name="currency_balance")
-    private Float currency_balance;
+    private Double currency_balance;
 
     @Column(name="created_at")
     private Date created_at;
 
     @Column(name = "user_id", insertable = false, updatable = false)
-    private Long user_id;
+    private Integer user_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -37,7 +37,7 @@ public class Account {
 //    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    private List<Withdrawal> withdrawals = new ArrayList<>();
 
-    public Account(Long id, String type_of_plan, Float savings, Float currency_balance, Date created_at) {
+    public Account(Integer id, String type_of_plan, Float savings, Double currency_balance, Date created_at) {
         this.id = id;
         this.type_of_plan = type_of_plan;
         this.savings = savings;
@@ -48,11 +48,11 @@ public class Account {
 public Account(){}
 
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -64,11 +64,11 @@ public Account(){}
         this.type_of_plan = type_of_plan;
     }
 
-    public Float getCurrency_balance() {
+    public Double getCurrency_balance() {
         return currency_balance;
     }
 
-    public void setCurrency_balance(Float currency_balance) {
+    public void setCurrency_balance(Double currency_balance) {
         this.currency_balance = currency_balance;
     }
 
@@ -96,11 +96,11 @@ public Account(){}
         this.user = user;
     }
 
-    public Long getUser_id() {
+    public Integer getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(Long user_id) {
+    public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
 

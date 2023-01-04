@@ -6,45 +6,36 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name ="withdrawals")
-public class Withdrawal {
+@Table(name = "exchanges")
+public class Exchange {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private Double withdrawal;
-    private String details;
+    private Integer id;
+    private Double exchange;
     private Date date;
+    private String details;
+
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
-    @JsonIgnoreProperties("withdrawals")
+    @JsonIgnoreProperties("exchanges")
     private Account account;
 
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Double getWithdrawal() {
-        return withdrawal;
+    public Double getExchange() {
+        return exchange;
     }
 
-    public void setWithdrawal(Double withdrawal) {
-        this.withdrawal = withdrawal;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
+    public void setExchange(Double exchange) {
+        this.exchange = exchange;
     }
 
     public Date getDate() {
@@ -55,6 +46,14 @@ public class Withdrawal {
         this.date = date;
     }
 
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
     public Account getAccount() {
         return account;
     }
@@ -62,6 +61,4 @@ public class Withdrawal {
     public void setAccount(Account account) {
         this.account = account;
     }
-
-
 }

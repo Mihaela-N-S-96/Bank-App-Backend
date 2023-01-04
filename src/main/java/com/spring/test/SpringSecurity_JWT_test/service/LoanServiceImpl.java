@@ -23,7 +23,7 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     private UserRepository userRepository;
 
-    public Loan saveLoan(Loan loan, Long id){
+    public Loan saveLoan(Loan loan, Integer id){
      Optional<Account> account = accountRepository.findById(id);
 
      loan.setAccount(account.get());//convert Optional to Object -> account.get()

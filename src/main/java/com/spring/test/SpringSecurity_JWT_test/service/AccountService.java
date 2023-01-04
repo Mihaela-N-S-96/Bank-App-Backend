@@ -9,8 +9,10 @@ import java.util.Optional;
 @Component
 public interface AccountService {
 
-    public Optional<Account> findById(Long id);
+    public Optional<Account> findById(Integer id);
         public Account saveAccount(Account account);
-    public void updateSavingsAccount(Float savings, Long id);
-    public void decreasesWithdrawalFromBalance(Float withdrawal, Long id);
+    public void updateSavingsAccount(Double savings, Integer id);
+    public void decreasesValueFromBalance(Double withdrawal, Integer id);
+    public String checkAccountType(Integer id);
+    public void  addValueToBalance(Double value, Integer id);
 }

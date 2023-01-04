@@ -29,20 +29,33 @@ public class AccountServiceImpl implements AccountService{
         return account;
     }
 
-    public Optional<Account> findById(Long id){
+    public Optional<Account> findById(Integer id){
 
         Optional<Account> account = accountRepository.findById(id);
         return account;
     }
 
     @Transactional
-    public void updateSavingsAccount(Float savings, Long id){
+    public void updateSavingsAccount(Double savings, Integer id){
         accountRepository.updateSavingsAccount(savings, id);
     }
 
     @Transactional
-    public void decreasesWithdrawalFromBalance(Float withdrawal, Long id){
-        accountRepository.decreasesWithdrawalFromBalance(withdrawal, id);
+    public void decreasesValueFromBalance(Double value, Integer id){
+        accountRepository.decreasesValueFromBalance(value, id);
     }
+    @Transactional
+    public void  addValueToBalance(Double value, Integer id){
+        accountRepository.addValueToBalance(value, id);
+    }
+    public String checkAccountType(Integer id){
+
+        Account account = new Account();
+        account = findById(id).get();
+
+        return account.getType_of_plan();
+    }
+
+
 
 }
