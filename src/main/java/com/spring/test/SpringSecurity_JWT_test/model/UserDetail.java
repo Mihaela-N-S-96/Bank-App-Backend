@@ -11,9 +11,10 @@ public class UserDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String first_name;
     private String last_name;
+    private String country;
     private Date birthday;
     private String address;
     private String gender;
@@ -37,7 +38,7 @@ public class UserDetail {
         this.mobile = mobile;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -49,7 +50,7 @@ public class UserDetail {
         this.user = user;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -89,6 +90,14 @@ public class UserDetail {
         return birthday;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
@@ -115,6 +124,7 @@ public class UserDetail {
                 "id=" + id +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
+                ", country='" + country + '\'' +
                 ", birthday=" + birthday +
                 ", address='" + address + '\'' +
                 ", gender='" + gender + '\'' +

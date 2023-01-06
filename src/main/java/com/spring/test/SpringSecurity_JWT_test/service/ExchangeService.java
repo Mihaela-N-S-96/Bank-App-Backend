@@ -41,9 +41,9 @@ public class ExchangeService implements ExchangeServiceImpl{
 
         Account account = accountRepository.findById(id).get();
         Integer user_id = account.getUser_id();
-        System.out.println(account.getType_of_plan());
+        System.out.println(account.getCurrency());
 
-        if(account.getType_of_plan().equals("euro")){
+        if(account.getCurrency().equals("euro")){
             Double lei = changeFromEuroToLei(exchange.getExchange());
             System.out.println("lei= "+ lei);
             accountRepository.decreasesValueFromBalance(exchange.getExchange(),id);
@@ -53,7 +53,7 @@ public class ExchangeService implements ExchangeServiceImpl{
             accountRepository.addValueToBalance(lei, id_account);
 
         }else
-            if(account.getType_of_plan().equals("lei")){
+            if(account.getCurrency().equals("lei")){
                 System.out.println("aici = "+ changeFromLeiToEuro(20.0));
             Double euro = changeFromLeiToEuro(exchange.getExchange());
             System.out.println("euro= "+ euro);

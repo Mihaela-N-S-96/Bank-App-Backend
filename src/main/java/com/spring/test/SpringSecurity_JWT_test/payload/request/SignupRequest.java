@@ -1,6 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.payload.request;
 
 
+import com.spring.test.SpringSecurity_JWT_test.model.Account;
+import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
+
+import java.util.List;
 import java.util.Set;
 
 public class SignupRequest {
@@ -8,8 +12,8 @@ public class SignupRequest {
     private String email;
     private String password;
     private Set<String> role;
-    private String gender;
-    private String mobile;
+    private UserDetail userDetail;
+    private Account account;
 
     public String getUsername() {
         return username;
@@ -43,19 +47,19 @@ public class SignupRequest {
         this.role = role;
     }
 
-    public String getGender() {
-        return gender;
+    public UserDetail getUserDetail() {
+        return userDetail;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
     }
 
-    public String getMobile() {
-        return mobile;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

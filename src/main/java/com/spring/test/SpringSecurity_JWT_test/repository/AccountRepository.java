@@ -24,14 +24,18 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     public void updateSavingsAccount(@Param(value= "savings") Double savings, Integer id);//vezi care e param aici TODO:1.
 
     @Modifying(flushAutomatically = true)
-    @Query("UPDATE accounts a SET a.currency_balance = a.currency_balance - :value where a.id = :id")
+    @Query("UPDATE accounts a SET a.balance = a.balance - :value where a.id = :id")
     public void decreasesValueFromBalance(Double value, Integer id);
 
     @Modifying
-    @Query("UPDATE accounts a SET a.currency_balance = a.currency_balance + :value where a.id = :id")
+    @Query("UPDATE accounts a SET a.balance = a.balance + :value where a.id = :id")
     public void addValueToBalance(Double value, Integer id);
 
+    @Modifying
+    @Query("UPDATE accounts a SET a.balance = a.balance + :value where a.user_id = :id and a.currency = :currency")
+    public void addTransferToBalance(Double value, Integer id, String currency);
 
-    @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.type_of_plan like :type_of_plan")//and a.type_of_plan = ?2
-    public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String type_of_plan);//, String type_of_plan
+
+    @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
+    public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
 }

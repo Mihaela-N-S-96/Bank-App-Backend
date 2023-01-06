@@ -48,12 +48,12 @@ public class AccountServiceImpl implements AccountService{
     public void  addValueToBalance(Double value, Integer id){
         accountRepository.addValueToBalance(value, id);
     }
-    public String checkAccountType(Integer id){
+    public String getAccountType(Integer id){
 
         Account account = new Account();
         account = findById(id).get();
 
-        return account.getType_of_plan();
+        return account.getCurrency();
     }
 
 

@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //@JsonIgnoreProperties({"hibernateLazyInitializer"})
@@ -19,7 +21,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String username;
     private String email;
     private String password;
@@ -36,7 +38,9 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     @JsonIgnoreProperties("user")
-    private Set<Account> accounts = new HashSet<>();
+    private List<Account> account = new ArrayList<>();
+
+
 
     public User() {
     }
@@ -47,11 +51,11 @@ public class User {
         this.password = password;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -94,6 +98,15 @@ public class User {
     public void setUserDetail(UserDetail userDetail) {
         this.userDetail = userDetail;
     }
+
+    public List<Account> getAccount() {
+        return account;
+    }
+
+    public void setAccount(List<Account> account) {
+        this.account = account;
+    }
+
 
     @Override
     public String toString() {

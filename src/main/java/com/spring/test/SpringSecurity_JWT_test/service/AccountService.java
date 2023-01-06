@@ -13,6 +13,6 @@ public interface AccountService {
         public Account saveAccount(Account account);
     public void updateSavingsAccount(Double savings, Integer id);
     public void decreasesValueFromBalance(Double withdrawal, Integer id);
-    public String checkAccountType(Integer id);
+    public String getAccountType(Integer id);
     public void  addValueToBalance(Double value, Integer id);
 }

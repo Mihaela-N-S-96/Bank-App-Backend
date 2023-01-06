@@ -1,10 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 
-import com.spring.test.SpringSecurity_JWT_test.model.ERole;
-import com.spring.test.SpringSecurity_JWT_test.model.Role;
-import com.spring.test.SpringSecurity_JWT_test.model.User;
-import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
+import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
@@ -23,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,7 +70,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser( @RequestBody User signUpRequest) {
+    public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -85,7 +83,7 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        // Create new user's account
+        // Create new user's details
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
@@ -96,8 +94,14 @@ public class AuthController {
             roles.add(userRole);
         user.setRoles(roles);
 
+        //Create new user's account
+        Account account = signUpRequest.getAccount();
+List<Account> accounts = new ArrayList<>();
+accounts.add(account);
+
         UserDetail userDetail = signUpRequest.getUserDetail();
         user.setUserDetail(userDetail);
+        user.setAccount(accounts);
         userService.saveUser(user);
 
         return ResponseEntity.ok("ok");

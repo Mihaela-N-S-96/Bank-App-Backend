@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface UserService {
 
      public User saveUser(User user);
-     public Optional<User> findById(Long id);
+     public Optional<User> findById(Integer id);
 }
