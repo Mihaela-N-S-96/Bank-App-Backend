@@ -1,9 +1,12 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
 import java.util.*;
+
 
 @Entity(name = "accounts")
 @Table(name = "accounts")
@@ -15,7 +18,7 @@ public class Account {
     @Column(name="currency")
     private String currency;
     @Column(name="savings")
-    private Float savings;
+    private Double savings;
 
     @Column(name="balance")
     private Double balance;
@@ -23,6 +26,7 @@ public class Account {
     @Column(name = "type_of_plan")
     private String type_of_plan;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name="created_at")
     private Date created_at;
 
@@ -40,7 +44,16 @@ public class Account {
 //    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    private List<Withdrawal> withdrawals = new ArrayList<>();
 
-    public Account(Integer id, String currency, Float savings, Double balance, Date created_at) {
+
+    public Account(String currency, Double savings, Double balance, String type_of_plan, Date created_at) {
+        this.currency = currency;
+        this.savings = savings;
+        this.balance = balance;
+        this.type_of_plan = type_of_plan;
+        this.created_at = created_at;
+    }
+
+    public Account(Integer id, String currency, Double savings, Double balance, Date created_at) {
         this.id = id;
         this.currency = currency;
         this.savings = savings;
@@ -83,11 +96,11 @@ public Account(){}
         this.created_at = created_at;
     }
 
-    public Float getSavings() {
+    public Double getSavings() {
         return savings;
     }
 
-    public void setSavings(Float savings) {
+    public void setSavings(Double savings) {
         this.savings = savings;
     }
 

@@ -28,6 +28,17 @@ public class UserDetail {
 
     public UserDetail(){}
 
+    public UserDetail(String first_name, String last_name, String country, Date birthday, String address, String gender, String mobile, Date created_at) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.country = country;
+        this.birthday = birthday;
+        this.address = address;
+        this.gender = gender;
+        this.mobile = mobile;
+        this.created_at = created_at;
+    }
+
     public UserDetail(
                        String gender,
                         String mobile ) {

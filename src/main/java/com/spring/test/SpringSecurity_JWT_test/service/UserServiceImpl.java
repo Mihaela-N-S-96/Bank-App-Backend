@@ -17,21 +17,24 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
 
-    public Account getAccountFromUser(User user){
+    public Account getAccountFromUser(User user, int index){
 
         List<Account> account = user.getAccount();
 
-       return account.get(0);
+       return account.get(index);
 
     }
 
      public User saveUser(User user){
 
         UserDetail userDetail = user.getUserDetail();
-        Account account = getAccountFromUser(user);
-
         userDetail.setUser(user);
+
+        Account account = getAccountFromUser(user,0);
         account.setUser(user);
+        account = getAccountFromUser(user,1);
+        account.setUser(user);
+
         user = userRepository.save(user);
         return user;
     }

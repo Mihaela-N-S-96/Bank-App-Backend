@@ -1,6 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
@@ -94,14 +95,12 @@ public class AuthController {
             roles.add(userRole);
         user.setRoles(roles);
 
-        //Create new user's account
-        Account account = signUpRequest.getAccount();
-List<Account> accounts = new ArrayList<>();
-accounts.add(account);
 
+        List<Account> first = signUpRequest.getAccount();
         UserDetail userDetail = signUpRequest.getUserDetail();
+
         user.setUserDetail(userDetail);
-        user.setAccount(accounts);
+        user.setAccount(first);
         userService.saveUser(user);
 
         return ResponseEntity.ok("ok");
