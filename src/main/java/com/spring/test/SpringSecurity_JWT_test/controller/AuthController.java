@@ -1,18 +1,18 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
-import com.spring.test.SpringSecurity_JWT_test.payload.response.MessageResponse;
 import com.spring.test.SpringSecurity_JWT_test.repository.RoleRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.JwtUtils;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
 import com.spring.test.SpringSecurity_JWT_test.service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,18 +21,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
 import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/bank/auth")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-             allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
+        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class AuthController {
+
+    private static final Logger logger =  LoggerFactory.getLogger(AuthController.class);
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -75,15 +77,15 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            logger.warn("Username is already taken!");
+            return ResponseEntity.status(HttpStatus.OK).body("Username is already taken!");
+
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            logger.warn("Email is already in use!");
+            return ResponseEntity.status(HttpStatus.OK).body("Email is already in use!");
+
         }
 
         // Create new user's details
@@ -92,9 +94,9 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
         user.setRoles(roles);
 
 
@@ -103,9 +105,14 @@ public class AuthController {
 
         user.setUserDetail(userDetail);
         user.setAccount(first);
-        userService.saveUser(user);
 
-        return ResponseEntity.ok("ok");
+        try {
+            userService.saveUser(user);
+        }catch (RuntimeException ex){
+            logger.warn("Success: User was saved!");
+            return   ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
+        }
+        return   ResponseEntity.status(HttpStatus.OK).body("Success: User was saved!");
     }
 
 }

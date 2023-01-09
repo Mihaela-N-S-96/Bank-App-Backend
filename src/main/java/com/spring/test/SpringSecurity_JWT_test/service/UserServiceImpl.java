@@ -30,12 +30,21 @@ public class UserServiceImpl implements UserService{
         UserDetail userDetail = user.getUserDetail();
         userDetail.setUser(user);
 
-        Account account = getAccountFromUser(user,0);
-        account.setUser(user);
-        account = getAccountFromUser(user,1);
-        account.setUser(user);
+         if(user.getAccount().size() == 2) {
+             Account account = getAccountFromUser(user, 0);
+             account.setUser(user);
+             account = getAccountFromUser(user, 1);
+             account.setUser(user);
+         }
+         else if(user.getAccount().size() == 1){
+             Account account = getAccountFromUser(user, 0);
+             account.setUser(user);
+         }else
+         if(user.getAccount().size() == 0)
 
-        user = userRepository.save(user);
+             throw new RuntimeException("Please, set minim one account!");
+
+         user = userRepository.save(user);
         return user;
     }
 

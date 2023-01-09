@@ -65,22 +65,22 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors( c ->{
-            CorsConfigurationSource cs = r ->{
+//        http.cors( c ->{
+//            CorsConfigurationSource cs = r ->{
+//
+//                CorsConfiguration cc = new CorsConfiguration();
+////                cc.setAllowedOrigins(List.of("http://localhost:3000"));
+////                cc.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH"));
+//                cc.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+//                cc.setAllowedMethods(Collections.singletonList("*"));
+//                cc.setAllowCredentials(true);
+//
+//                return cc;
+//            };
+//                 c.configurationSource(cs);
+//        });
 
-                CorsConfiguration cc = new CorsConfiguration();
-//                cc.setAllowedOrigins(List.of("http://localhost:3000"));
-//                cc.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH"));
-                cc.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                cc.setAllowedMethods(Collections.singletonList("*"));
-                cc.setAllowCredentials(true);
-
-                return cc;
-            };
-                 c.configurationSource(cs);
-        });
-
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/bank/auth/**").permitAll()
