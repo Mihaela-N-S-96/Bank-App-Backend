@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bank/auth")
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
+             allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
