@@ -14,8 +14,8 @@ public class TestController {
 
     @PostMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public String userAccess() {
-        return "User Content1.";
+    public String userAccess(@RequestParam(name = "id") Integer id) {
+        return "User Content1. " + id;
     }
 
 
