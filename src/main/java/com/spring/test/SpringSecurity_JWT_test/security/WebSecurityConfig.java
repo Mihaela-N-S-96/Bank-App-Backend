@@ -85,14 +85,13 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/bank/auth/**").permitAll()
                 .antMatchers("/bank/test/**").permitAll()
-                .antMatchers("/user/**").permitAll()
                 .antMatchers("/accounts/**").permitAll()
                 .antMatchers("/loans/**").permitAll()
                 .antMatchers("/withdrawals/**").permitAll()
                 .antMatchers("/exchanges/**").permitAll()
                 .antMatchers("/transfers/**").permitAll()
                 .anyRequest().authenticated();
-
+//.antMatchers("/user/**").permitAll()
         http.authenticationProvider(authenticationProvider());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -23,8 +23,8 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PostMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Optional<User> getById(@PathVariable Integer id){
 
         return userRepository.findById(id);
