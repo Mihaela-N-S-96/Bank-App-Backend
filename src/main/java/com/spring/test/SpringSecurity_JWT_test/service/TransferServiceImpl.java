@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 
 @Service
 public class TransferServiceImpl implements TransferService{
+
 
     @Autowired
     private AccountRepository accountRepository;
@@ -36,7 +38,25 @@ public class TransferServiceImpl implements TransferService{
 
         transfer.setAccount(account);
         transfer = transferRepository.save(transfer);
-        return transfer;
 
+        return new Transfer(transfer.getId(), transfer.getTransfer(), transfer.getDate(), transfer.getDetails());
+
+    }
+
+    @Transactional
+    public HashMap<String, Object> getTransferResponse(Transfer transfer,
+                                                       Integer id,
+                                                       String email){
+        Transfer transferResponse = saveTransfer(transfer,id, email);
+
+        String receiverName = userRepository.findByEmail(email).getUsername();
+        String senderName = userRepository.findByAccountId(id).getUsername();
+
+        HashMap<String, Object> responseTransfer = new HashMap<>();
+        responseTransfer.put("transfer", transferResponse);
+        responseTransfer.put("receiver",receiverName);
+        responseTransfer.put("sender",senderName);
+
+        return responseTransfer;
     }
 }

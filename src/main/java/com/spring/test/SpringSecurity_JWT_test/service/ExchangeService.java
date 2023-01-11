@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 @Service
 public class ExchangeService implements ExchangeServiceImpl{
 
-    public static Double EURO_VALUE = 5.00;
+    public static Double EURO_VALUE = 5.23;
 
 
     @Autowired

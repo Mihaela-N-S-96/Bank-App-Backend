@@ -112,7 +112,7 @@ public class AuthController {
             logger.warn("Success: User was saved!");
             return   ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
         }
-        return   ResponseEntity.status(HttpStatus.OK).body("Success: User was saved!");
+        return   ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
 }

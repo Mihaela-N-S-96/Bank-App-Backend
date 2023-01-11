@@ -22,6 +22,14 @@ public class Transfer {
     @JsonIgnoreProperties("exchanges")
     private Account account;
 
+
+    public Transfer(Integer id, Double transfer, Date date, String details) {
+        this.id = id;
+        this.transfer = transfer;
+        this.date = date;
+        this.details = details;
+    }
+
     public Integer getId() {
         return id;
     }
