@@ -1,6 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
-
+import com.spring.test.SpringSecurity_JWT_test.exceptions.signin.SigninRequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
@@ -78,14 +78,12 @@ public class AuthController {
     public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             logger.warn("Username is already taken!");
-            return ResponseEntity.status(HttpStatus.OK).body("Username is already taken!");
-
+            throw new SigninRequestException("Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             logger.warn("Email is already in use!");
-            return ResponseEntity.status(HttpStatus.OK).body("Email is already in use!");
-
+            throw new SigninRequestException("Email is already in use!");
         }
 
         // Create new user's details
