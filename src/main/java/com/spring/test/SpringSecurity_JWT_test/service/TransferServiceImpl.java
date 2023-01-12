@@ -1,6 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
-import com.spring.test.SpringSecurity_JWT_test.exceptions.transfer.TransferRequestException;
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Transfer;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -39,13 +39,13 @@ public class TransferServiceImpl implements TransferService{
          accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
 
          if(!accountRepository.findById(id_account).isPresent()){
-             throw new TransferRequestException("Can not find account with this id!");
+             throw new RequestException("Can not find account with this id!");
          } else {
               account = accountService.findById(id_account).get();
          }
 
         if(userRepository.findByEmail(email) == null){
-            throw new TransferRequestException("Can not find user with this email!");
+            throw new RequestException("Can not find user with this email!");
         }else {
             id_user = userRepository.findByEmail(email).getId();
         }

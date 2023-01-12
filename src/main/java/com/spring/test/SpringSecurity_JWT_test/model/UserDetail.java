@@ -1,6 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,10 +16,14 @@ public class UserDetail {
     private String first_name;
     private String last_name;
     private String country;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name="birthday")
     private Date birthday;
     private String address;
     private String gender;
     private String mobile;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "created_at")
     private Date created_at;
 
     @OneToOne(cascade = CascadeType.ALL)

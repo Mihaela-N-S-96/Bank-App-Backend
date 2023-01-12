@@ -1,5 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -13,6 +14,8 @@ public class Exchange {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private Double exchange;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "date")
     private Date date;
     private String details;
 

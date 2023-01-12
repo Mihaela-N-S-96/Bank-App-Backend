@@ -1,5 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -16,7 +17,8 @@ public class Loan {
 
     private Double loan;
     private String details;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "date")
     private Date date;
 
     @ManyToOne(cascade = CascadeType.ALL)
