@@ -1,5 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Exchange;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 
 @Service
 public class ExchangeService implements ExchangeServiceImpl{
@@ -30,45 +32,66 @@ public class ExchangeService implements ExchangeServiceImpl{
         return result;
     }
 
-    public Double changeFromLeiToEuro(Double lei){
-        BigDecimal bd = new BigDecimal(lei / EURO_VALUE).setScale(2, RoundingMode.HALF_UP);
+    public Double changeFromLeiToEuro(Double ron){
+        BigDecimal bd = new BigDecimal(ron / EURO_VALUE).setScale(2, RoundingMode.HALF_UP);
         Double result = bd.doubleValue();
         return result;
     }
 
     @Transactional
-    public Exchange saveExchange(Exchange exchange, Integer id){
+    public void decreasesAndAddValueToBalance(Exchange exchange, Integer current_account,
+                                              Integer user_id,String typeOfExchange,
+                                              String changeToCurrency, Double value){
 
-        Account account = accountRepository.findById(id).get();
+        Integer id_account;
+        accountRepository.decreasesValueFromBalance(exchange.getExchange(), current_account);
+
+        if(accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency) == null)
+            throw new RequestException("The "+typeOfExchange+" exchange cannot be executed! The user does not have a "+changeToCurrency+" account.");
+        id_account = accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency);
+
+        accountRepository.addValueToBalance(value, id_account);
+    }
+
+    @Transactional
+    public Exchange saveExchange(Exchange exchange, Integer current_account){
+
+        Account account = accountRepository.findById(current_account).get();
         Integer user_id = account.getUser_id();
-        System.out.println(account.getCurrency());
+        String typeOfExchange = "";
 
         if(account.getCurrency().equals("euro")){
+            typeOfExchange = "EuroToRon";
             Double lei = changeFromEuroToLei(exchange.getExchange());
-            System.out.println("lei= "+ lei);
-            accountRepository.decreasesValueFromBalance(exchange.getExchange(),id);
-
-            Integer id_account = accountRepository.findByIdAndTypeOfPlan(user_id, "lei");//, "lei"
-//Long id_account = accountRepository.findByIdAndTypeOfPlan(id).getId();
-            accountRepository.addValueToBalance(lei, id_account);
-
+            //decreases the value from current account and add it to the exchangeAccount
+            decreasesAndAddValueToBalance(exchange,current_account,user_id,typeOfExchange,"ron",lei);
         }else
-            if(account.getCurrency().equals("lei")){
-                System.out.println("aici = "+ changeFromLeiToEuro(20.0));
+            if(account.getCurrency().equals("ron")){
+            typeOfExchange = "RonToEuro";
             Double euro = changeFromLeiToEuro(exchange.getExchange());
-            System.out.println("euro= "+ euro);
-            accountRepository.decreasesValueFromBalance(exchange.getExchange(),id);
-
-            Integer id_account = accountRepository.findByIdAndTypeOfPlan(user_id, "euro");//, "euro"
-//                Long id_account = accountRepository.findByIdAndTypeOfPlan(id).getId();
-                System.out.println("id_account= "+ id_account);
-            accountRepository.addValueToBalance(euro, id_account);
+            //decreases the value from current account and add it to the exchangeAccount
+            decreasesAndAddValueToBalance(exchange,current_account,user_id,typeOfExchange,"euro",euro);
             }
 
             exchange.setAccount(account);
+            exchange.setType_exchange(typeOfExchange);
             exchange = exchangeRepository.save(exchange);
 
-          return exchange;
+
+          return new Exchange(exchange.getId(), exchange.getExchange(),exchange.getType_exchange(), exchange.getDate(), exchange.getDetails());
+    }
+    @Transactional
+    public HashMap<String, Object> getExchangeResponse(Exchange exchange,
+                                                       Integer id_account){
+
+        Exchange exchange1 = saveExchange(exchange, id_account);
+        Double rate = EURO_VALUE;
+
+        HashMap<String, Object> exchangeResponse = new HashMap<>();
+        exchangeResponse.put("exchange", exchange1);
+        exchangeResponse.put("rate", rate);
+
+        return new HashMap<>(exchangeResponse);
     }
 
 

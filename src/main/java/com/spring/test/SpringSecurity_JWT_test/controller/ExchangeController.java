@@ -1,9 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Exchange;
-import com.spring.test.SpringSecurity_JWT_test.service.ExchangeService;
 import com.spring.test.SpringSecurity_JWT_test.service.ExchangeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,9 +16,10 @@ public class ExchangeController {
 
 
     @PatchMapping("/exchange")
-    public Exchange addExchange(@RequestBody Exchange exchange, @RequestParam Integer id){//id_account
-//        exchange =exchange
+    public ResponseEntity<Object> addExchange(@RequestBody Exchange exchange, @RequestParam Integer id){//id_account
 
-        return  exchangeService.saveExchange(exchange, id);
+
+        return new ResponseEntity<>(exchangeService.getExchangeResponse(exchange,id), HttpStatus.OK);
+
     }
 }

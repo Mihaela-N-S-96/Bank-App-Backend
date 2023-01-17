@@ -13,9 +13,17 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
 
+    @GetMapping("/check")
+    public void approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
+
+        loanService.approveRate(id, loan);
+    }
+
     @PostMapping("/loan")
     public Loan addLoan(@RequestBody Loan loan, @RequestParam Integer id){
 
         return loanService.saveLoan(loan, id);
     }
+
+
 }

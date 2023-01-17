@@ -8,4 +8,7 @@ import java.util.Optional;
 @Component
 public interface LoanService  {
     public Loan saveLoan(Loan loan, Integer id);
+    public boolean takeLoan(Double salary, Double previous_rates);
+    public Double getSumOfRateByAccountId(Integer id, Double current_rate);
+    public void approveRate(Integer account_id, Loan loan);
 }

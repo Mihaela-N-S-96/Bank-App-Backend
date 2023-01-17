@@ -1,6 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
-import com.spring.test.SpringSecurity_JWT_test.SpringSecurityJwtTestApplication;
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Service
 public class LoanServiceImpl implements LoanService{
+
+    private final Double RATE_PERCENT = 30.0;
 
     @Autowired
     private LoanRepository loanRepository;
@@ -30,5 +32,26 @@ public class LoanServiceImpl implements LoanService{
 
      loan = loanRepository.save(loan);
         return loan;
+    }
+
+    public boolean takeLoan(Double salary, Double previous_rates){
+        Double approveRate = ( RATE_PERCENT / 100 )* salary;
+
+        if(previous_rates <= approveRate)
+            return true;
+                 else return false;
+    }
+
+    public Double getSumOfRateByAccountId(Integer id, Double current_rate){
+        return current_rate + loanRepository.getSumOfRates(id);
+    }
+
+    public void approveRate(Integer account_id, Loan loan){
+        int months = 12 * loan.getYears();
+        Double current_rate = loan.getLoan() / months;
+
+        if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate)))
+            throw new RequestException("Success");
+        else throw new RequestException("Failed");
     }
 }
