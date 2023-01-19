@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
     public Loan save(Loan loan);
-    @Query("SELECT SUM(l.rate) FROM loans l where l.account_id = :id")
+    @Query(value = "SELECT SUM(l.rate) FROM loans l where l.account_id = :id", nativeQuery = true)
     public Double getSumOfRates(@Param(value = "id") Integer id);
 
 

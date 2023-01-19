@@ -19,6 +19,8 @@ public class Account {
     private String currency;
     @Column(name="savings")
     private Double savings;
+    @Column(name="deposit")
+    private Double deposit;
 
     @Column(name="balance")
     private Double balance;
@@ -45,9 +47,20 @@ public class Account {
 //    private List<Withdrawal> withdrawals = new ArrayList<>();
 
 
-    public Account(String currency, Double savings, Double balance, String type_of_plan, Date created_at) {
+    public Account(String currency, Double savings, Double balance,Double deposit, String type_of_plan, Date created_at) {
         this.currency = currency;
         this.savings = savings;
+        this.balance = balance;
+        this.deposit = deposit;
+        this.type_of_plan = type_of_plan;
+        this.created_at = created_at;
+    }
+
+    public Account(Integer id, String currency, Double savings, Double deposit, Double balance, String type_of_plan, Date created_at) {
+        this.id = id;
+        this.currency = currency;
+        this.savings = savings;
+        this.deposit = deposit;
         this.balance = balance;
         this.type_of_plan = type_of_plan;
         this.created_at = created_at;
@@ -145,4 +158,11 @@ public Account(){}
 //    }
 
 
+    public Double getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(Double deposit) {
+        this.deposit = deposit;
+    }
 }

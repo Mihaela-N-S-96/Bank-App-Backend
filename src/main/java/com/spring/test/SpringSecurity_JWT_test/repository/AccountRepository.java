@@ -38,4 +38,21 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
     public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE accounts a SET a.deposit = a.deposit + :value WHERE a.id = :account_id")
+    public void addValueToDeposit(Double value, Integer account_id);
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE accounts a SET a.deposit = a.deposit - :value WHERE a.id = :account_id")
+    public void decreasesValueFromDeposit(Double value, Integer account_id);
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE accounts a SET a.savings = a.savings + :value WHERE a.id = :account_id")
+    public void addValueToSavings(Double value, Integer account_id);
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE accounts a SET a.savings = a.savings - :value WHERE a.id = :account_id")
+    public void decreasesValueFromSavings(Double value, Integer account_id);
+
 }
