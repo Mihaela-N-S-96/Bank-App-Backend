@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/exchanges")
-@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
+@CrossOrigin(origins = "http://localhost:3000/services/savings", methods = {RequestMethod.GET, RequestMethod.POST},
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class ExchangeController {
 
