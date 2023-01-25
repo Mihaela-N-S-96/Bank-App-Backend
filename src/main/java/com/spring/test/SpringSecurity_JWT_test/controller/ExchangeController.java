@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/exchanges")
-@CrossOrigin(origins = "http://localhost:3000/services/savings", methods = {RequestMethod.GET, RequestMethod.POST},
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class ExchangeController {
 
@@ -17,7 +17,7 @@ public class ExchangeController {
     private ExchangeServiceImpl exchangeService;
 
 
-    @PatchMapping("/exchange")
+    @PostMapping("/exchange")
     public ResponseEntity<Object> addExchange(@RequestBody Exchange exchange, @RequestParam Integer id){//id_account
 
 

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/deposit")
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
+        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class DepositController {
 
     @Autowired
