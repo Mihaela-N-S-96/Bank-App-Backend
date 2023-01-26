@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Date;
 
+@JsonIgnoreProperties(value = {"account"})
 @Entity(name = "savings")
 @Table(name = "savings")
 public class Saving {

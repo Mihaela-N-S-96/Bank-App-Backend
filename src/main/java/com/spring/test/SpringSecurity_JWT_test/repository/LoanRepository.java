@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
@@ -16,5 +18,6 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "SELECT SUM(l.rate) FROM loans l where l.account_id = :id", nativeQuery = true)
     public Double getSumOfRates(@Param(value = "id") Integer id);
 
-
+    @Query(value = "SELECT * FROM loan l WHERE l.account_id = :account_id", nativeQuery = true)
+    public ArrayList<Loan> getAllLoansByAccountId(Integer account_id);
 }

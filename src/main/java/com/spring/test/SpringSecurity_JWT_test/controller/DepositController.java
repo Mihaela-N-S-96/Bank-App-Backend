@@ -1,11 +1,14 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Deposit;
+import com.spring.test.SpringSecurity_JWT_test.repository.DepositRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.DepositService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/deposit")
@@ -15,6 +18,14 @@ public class DepositController {
 
     @Autowired
     private DepositService depositService;
+
+    @Autowired
+    private DepositRepository depositRepository;
+    @GetMapping("/")
+    public ArrayList<Deposit> getAllDeposits(@RequestParam Integer id){
+
+        return  depositRepository.getAllDepositsByAccountId(id);
+    }
 
     @PostMapping("/new")
     public ResponseEntity<Object> addDeposit(@RequestBody Deposit deposit,
