@@ -18,6 +18,6 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "SELECT SUM(l.rate) FROM loans l where l.account_id = :id", nativeQuery = true)
     public Double getSumOfRates(@Param(value = "id") Integer id);
 
-    @Query(value = "SELECT * FROM loan l WHERE l.account_id = :account_id", nativeQuery = true)
+    @Query(value = "SELECT * FROM loans l WHERE l.account_id = :account_id", nativeQuery = true)
     public ArrayList<Loan> getAllLoansByAccountId(Integer account_id);
 }
