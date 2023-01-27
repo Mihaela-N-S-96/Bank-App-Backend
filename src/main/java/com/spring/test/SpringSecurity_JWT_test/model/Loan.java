@@ -17,7 +17,8 @@ public class Loan {
 
     @Column(name = "loan")
     private Double loan;
-
+    @Column(name = "total_paid")
+    private Double total_paid;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date")
     private Date date;
@@ -63,6 +64,14 @@ public class Loan {
 
     public void setLoan(Double loan) {
         this.loan = loan;
+    }
+
+    public Double getTotal_paid() {
+        return total_paid;
+    }
+
+    public void setTotal_paid(Double total_paid) {
+        this.total_paid = total_paid;
     }
 
     public String getDetails() {

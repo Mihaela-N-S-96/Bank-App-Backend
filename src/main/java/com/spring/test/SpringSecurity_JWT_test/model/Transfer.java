@@ -26,6 +26,8 @@ public class Transfer {
     @JsonIgnoreProperties("exchanges")
     private Account account;
 
+    public Transfer() {
+    }
 
     public Transfer(Integer id, Double transfer, Date date, String details) {
         this.id = id;

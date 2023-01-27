@@ -30,6 +30,11 @@ public class LoanServiceImpl implements LoanService{
 
      loan.setAccount(account.get());//convert Optional to Object -> account.get()
 
+        if(loanRepository.getSumOfPayByAccountId(id) == null )
+            loan.setTotal_paid(0.0);
+
+        else
+     loan.setTotal_paid(loanRepository.getSumOfPayByAccountId(id)+ loan.getRate());
      loan = loanRepository.save(loan);
         return loan;
     }
