@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface HistoryLoanService {
-    public HistoryLoan saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id);
+    public void saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id);
     public List<LoanJoinHistory> getLoanHistoryResponse(HistoryLoan historyLoan,
                                                         Integer id_loan, Integer account_id);
 }

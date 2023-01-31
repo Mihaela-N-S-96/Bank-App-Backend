@@ -8,7 +8,6 @@ import com.spring.test.SpringSecurity_JWT_test.repository.DepositRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Optional;
@@ -21,6 +20,7 @@ public class DepositServiceImpl implements DepositService{
 
     @Autowired
     private DepositRepository depositRepository;
+
 
     public boolean validateDeposit(Account account, Double value){
         if(value<= account.getDeposit())

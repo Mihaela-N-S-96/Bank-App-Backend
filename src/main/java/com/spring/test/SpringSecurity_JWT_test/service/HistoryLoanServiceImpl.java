@@ -24,19 +24,21 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
 
 
     @Transactional
-    public HistoryLoan saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id){
+    public void saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id){
         Optional<Loan> loan = loanRepository.findById(id);
 
         historyLoan.setLoan(loan.get());//convert Optional to Object -> account.get()
         historyLoan = historyLoanRepository.saveAndFlush(historyLoan);
 
-        return historyLoan;
+//        return historyLoan;
     }
 
     @Transactional
     public List<LoanJoinHistory> getLoanHistoryResponse(HistoryLoan historyLoan,
                                                        Integer id_loan, Integer account_id){
         Optional<Loan> loan = loanRepository.findById(id_loan);
+
+        saveLoan(historyLoan, id_loan, account_id);
 
         if(loanRepository.getSumOfPayByAccountId(account_id) != null ) {
            Double sumOfPayments = loanRepository.getSumOfPayByAccountId(account_id) + loan.get().getRate();

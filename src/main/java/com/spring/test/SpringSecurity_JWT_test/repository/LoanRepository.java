@@ -1,7 +1,5 @@
 package com.spring.test.SpringSecurity_JWT_test.repository;
 
-
-
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
