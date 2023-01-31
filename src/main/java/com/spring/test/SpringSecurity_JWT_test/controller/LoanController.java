@@ -38,9 +38,10 @@ public class LoanController {
     }
 
     @GetMapping("/check")
-    public void approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
+    public Loan approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
 
-        loanService.approveRate(id, loan);
+
+        return loanService.approveRate(id, loan);
     }
 
     @PostMapping("/loan")

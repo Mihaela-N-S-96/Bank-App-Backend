@@ -9,6 +9,7 @@ import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.Optional;
 
 @Service
@@ -30,7 +31,8 @@ public class LoanServiceImpl implements LoanService{
 
      loan.setAccount(account.get());//convert Optional to Object -> account.get()
 
-        if(loanRepository.getSumOfPayByAccountId(id) == null )
+//        if(loanRepository.getSumOfPayByAccountId(id) == null )
+            if(loan.getTotal_paid() == null)
             loan.setTotal_paid(0.0);
 
 //        else
@@ -51,12 +53,17 @@ public class LoanServiceImpl implements LoanService{
         return current_rate + loanRepository.getSumOfRates(id);
     }
 
-    public void approveRate(Integer account_id, Loan loan){
-        int months = 12 * loan.getYears();
-        Double current_rate = loan.getLoan() / months;
+    public Loan approveRate(Integer account_id, Loan loan){
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
-        if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate)))
-            throw new RequestException("Success");
+        int months = 12 * loan.getYears();
+        Double current_rate = Double.valueOf(decimalFormat.format(loan.getLoan() / months));
+
+        if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate))) {
+            loan.setRate(current_rate);
+            //throw new RequestException("Success");
+            return loan;
+        }
         else throw new RequestException("Failed");
     }
 }
