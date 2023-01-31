@@ -48,7 +48,7 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
         }
 
         List<LoanJoinHistory> responseObjectList = new ArrayList<>();
-        responseObjectList = loanRepository.findJoinHistoryLoanByLoanId(id_loan);
+        responseObjectList = loanRepository.findAllJoinHistoryLoan();
 
         return responseObjectList;
     }
