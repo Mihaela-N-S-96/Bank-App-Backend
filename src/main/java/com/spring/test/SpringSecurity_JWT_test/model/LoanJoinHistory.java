@@ -2,16 +2,13 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.Date;
-import java.util.List;
 
 
 public class LoanJoinHistory {
 
     private Integer id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
     private String details;
     private Double total_paid;

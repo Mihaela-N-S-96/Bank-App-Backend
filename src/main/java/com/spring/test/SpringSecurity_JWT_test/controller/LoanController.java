@@ -7,8 +7,11 @@ import com.spring.test.SpringSecurity_JWT_test.repository.LoanRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.HistoryLoanService;
 import com.spring.test.SpringSecurity_JWT_test.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.OnClose;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +30,11 @@ public class LoanController {
 
     @Autowired
     private HistoryLoanService historyLoanService;
-    @GetMapping("/")
-    public ArrayList<Loan> getAllLoans(@RequestParam Integer id){
 
-        return  loanRepository.getAllLoansByAccountId(id);
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllLoans(@RequestParam Integer id){
+
+        return  new ResponseEntity<>(historyLoanService.getAllHistoryResponse(id), HttpStatus.OK);
     }
 
     @GetMapping("/check")
@@ -48,7 +52,7 @@ public class LoanController {
     @PostMapping("/pay")
     public List<LoanJoinHistory> addPayLoan(@RequestBody HistoryLoan historyLoan, @RequestParam Integer id, @RequestParam Integer account_id){//loan_id
 
-        return historyLoanService.getLoanHistoryResponse(historyLoan, id, account_id);
+        return historyLoanService.getPayResponse(historyLoan, id, account_id);
     }
 
 

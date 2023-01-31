@@ -19,7 +19,7 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "SELECT SUM(l.rate) FROM loans l where l.account_id = :id", nativeQuery = true)
     public Double getSumOfRates(@Param(value = "id") Integer id);
 
-    @Query(value = "SELECT * FROM loans l WHERE l.account_id = :account_id", nativeQuery = true)
+    @Query(value = "SELECT * FROM loans l WHERE l.account_id = :account_id ORDER BY l.date DESC", nativeQuery = true)
     public ArrayList<Loan> getAllLoansByAccountId(Integer account_id);
 
     @Query(value = "SELECT SUM(l.total_paid) FROM loans l where l.account_id = :id", nativeQuery = true)
@@ -29,7 +29,13 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "UPDATE loans l SET l.total_paid = :value where l.id = :id")
     public void setTotalPaidById(Integer id, Double value);
 
-    @Query(value = "SELECT new com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory(h.id,h.date,l.details,l.total_paid, l.rate) " +
-            "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id")
-    List<LoanJoinHistory> findAllJoinHistoryLoan();
+    @Query(value = "SELECT new com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory" +
+            "(l.id, h.date,l.details,l.total_paid,l.rate) " +
+            "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id WHERE l.id = :id_loan ORDER BY h.date DESC")
+    List<LoanJoinHistory> findJoinHistoryLoanByLoanId(Integer id_loan);
+
+    @Query(value = "SELECT new com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory" +
+            "(l.id, h.date,l.details,l.total_paid,l.rate) " +
+            "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id ORDER BY h.date DESC")
+    ArrayList<LoanJoinHistory> findAllJoinHistoryLoan();
 }

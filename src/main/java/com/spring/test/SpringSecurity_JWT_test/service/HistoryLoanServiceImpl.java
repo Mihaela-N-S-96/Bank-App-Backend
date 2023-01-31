@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
     }
 
     @Transactional
-    public List<LoanJoinHistory> getLoanHistoryResponse(HistoryLoan historyLoan,
+    public List<LoanJoinHistory> getPayResponse(HistoryLoan historyLoan,
                                                        Integer id_loan, Integer account_id){
         Optional<Loan> loan = loanRepository.findById(id_loan);
 
@@ -47,8 +48,21 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
         }
 
         List<LoanJoinHistory> responseObjectList = new ArrayList<>();
-        responseObjectList = loanRepository.findAllJoinHistoryLoan();
+        responseObjectList = loanRepository.findJoinHistoryLoanByLoanId(id_loan);
 
         return responseObjectList;
+    }
+
+    public HashMap<String, ArrayList> getAllHistoryResponse(Integer account_id){
+
+        ArrayList<LoanJoinHistory> listAllPays = loanRepository.findAllJoinHistoryLoan();
+        ArrayList<Loan> listAllLoans = loanRepository.getAllLoansByAccountId(account_id);
+
+        HashMap<String, ArrayList> response = new HashMap<>();
+        response.put("listAllPays", listAllPays);
+        response.put("listAllLoans", listAllLoans);
+
+        return new HashMap<>(response);
+
     }
 }
