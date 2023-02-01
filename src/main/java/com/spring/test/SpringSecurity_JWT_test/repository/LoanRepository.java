@@ -22,8 +22,8 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "SELECT * FROM loans l WHERE l.account_id = :account_id ORDER BY l.date DESC", nativeQuery = true)
     public ArrayList<Loan> getAllLoansByAccountId(Integer account_id);
 
-    @Query(value = "SELECT SUM(l.total_paid) FROM loans l where l.account_id = :id", nativeQuery = true)
-    public Double getSumOfPayByAccountId(@Param(value = "id") Integer id);
+    @Query(value = "SELECT l.total_paid FROM loans l where l.id = :id", nativeQuery = true)
+    public Double getTotalPayByLoanId(@Param(value = "id") Integer id);
 
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE loans l SET l.total_paid = :value where l.id = :id")
