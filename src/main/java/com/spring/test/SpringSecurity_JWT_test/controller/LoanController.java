@@ -37,7 +37,7 @@ public class LoanController {
         return  new ResponseEntity<>(historyLoanService.getAllHistoryResponse(id), HttpStatus.OK);
     }
 
-    @GetMapping("/check")
+    @PostMapping("/check")
     public Loan approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
 
 
