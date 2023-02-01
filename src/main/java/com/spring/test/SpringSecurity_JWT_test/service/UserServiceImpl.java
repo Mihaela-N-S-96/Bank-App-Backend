@@ -3,6 +3,8 @@ package com.spring.test.SpringSecurity_JWT_test.service;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
+import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
+import com.spring.test.SpringSecurity_JWT_test.repository.UserDetailRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,12 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
 
 
     public Account getAccountFromUser(User user, int index){
@@ -53,5 +61,23 @@ public class UserServiceImpl implements UserService{
     public Optional<User> findById(Integer id) {
         Optional<User> user = userRepository.findById(id);
         return user;
+    }
+
+    public HashMap<String, Object> getUserLoginResponse(Integer id_user){
+
+        UserDetail userDetail = new UserDetail();
+        userDetail = userDetailRepository.getUserDetailsByUserId(id_user);
+
+        List<Account> account = new ArrayList<>();
+        account = accountRepository.findByUserId(id_user);
+
+
+        HashMap<String, Object> userResponse = new HashMap<>();
+        userResponse.put("userDetail", userDetail);
+        userResponse.put("account", account);
+
+        return new HashMap<>(userResponse);
+
+
     }
 }

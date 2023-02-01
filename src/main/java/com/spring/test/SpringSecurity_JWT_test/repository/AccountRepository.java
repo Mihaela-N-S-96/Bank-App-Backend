@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 //@Repository
@@ -38,6 +40,12 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
     public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
+//a.id, a.balance, a.currency, a.type_of_plan, a.savings, a.deposit, a.created_at
+    //a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan
+    @Query(value = "SELECT a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan, a.user_id FROM accounts a " +
+            "WHERE a.user_id = :id", nativeQuery = true)//and a.type_of_plan = ?2
+    public ArrayList<Account> findByUserId(@Param(value = "id") Integer id);//, String type_of_plan
+
 
     @Modifying(flushAutomatically = true)
     @Query("UPDATE accounts a SET a.deposit = a.deposit + :value WHERE a.id = :account_id")

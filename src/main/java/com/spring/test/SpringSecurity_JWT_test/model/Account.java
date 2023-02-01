@@ -1,6 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -32,14 +33,16 @@ public class Account {
     @Column(name="created_at")
     private Date created_at;
 
+    @JsonIgnoreProperties(value = "user_id")
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties("accounts")
+    @JsonIgnore
     private User user;
 
+    @JsonIgnoreProperties(value = {"loans", "user"})
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
     private List<Loan> loans = new ArrayList<>();
 
@@ -166,3 +169,5 @@ public Account(){}
         this.deposit = deposit;
     }
 }
+
+
