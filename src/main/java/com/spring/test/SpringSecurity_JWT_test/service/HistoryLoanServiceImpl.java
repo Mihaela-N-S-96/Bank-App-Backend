@@ -49,14 +49,14 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
         }
 
         List<LoanJoinHistory> responseObjectList = new ArrayList<>();
-        responseObjectList = loanRepository.findAllJoinHistoryLoan();
+        responseObjectList = loanRepository.findAllJoinHistoryLoanByAccountId(account_id);
 
         return responseObjectList;
     }
 
     public HashMap<String, ArrayList> getAllHistoryResponse(Integer account_id){
 
-        ArrayList<LoanJoinHistory> listAllPays = loanRepository.findAllJoinHistoryLoan();
+        ArrayList<LoanJoinHistory> listAllPays = loanRepository.findAllJoinHistoryLoanByAccountId(account_id);
         ArrayList<Loan> listAllLoans = loanRepository.getAllLoansByAccountId(account_id);
 
         HashMap<String, ArrayList> response = new HashMap<>();

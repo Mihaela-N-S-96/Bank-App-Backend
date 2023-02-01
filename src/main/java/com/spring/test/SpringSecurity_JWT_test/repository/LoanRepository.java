@@ -36,6 +36,6 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
     @Query(value = "SELECT new com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory" +
             "(l.id, h.date,l.details,l.total_paid,l.rate) " +
-            "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id ORDER BY h.date DESC")
-    ArrayList<LoanJoinHistory> findAllJoinHistoryLoan();
+            "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id WHERE l.account_id = :account_id ORDER BY h.date DESC")
+    ArrayList<LoanJoinHistory> findAllJoinHistoryLoanByAccountId(Integer account_id);
 }
