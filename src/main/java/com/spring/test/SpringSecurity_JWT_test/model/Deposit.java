@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @JsonIgnoreProperties(value = {"account"})
-@Entity
+@Entity(name = "deposit")
 @Table(name = "deposit")
 public class Deposit {
     @Id
