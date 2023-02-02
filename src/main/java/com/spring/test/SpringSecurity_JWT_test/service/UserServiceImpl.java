@@ -65,6 +65,11 @@ public class UserServiceImpl implements UserService{
 
     public HashMap<String, Object> getUserLoginResponse(Integer id_user){
 
+        User user = new User();
+        user = userRepository.findById(id_user).get();
+        String name = user.getUsername();
+        String email = user.getEmail();
+
         UserDetail userDetail = new UserDetail();
         userDetail = userDetailRepository.getUserDetailsByUserId(id_user);
 
@@ -73,11 +78,13 @@ public class UserServiceImpl implements UserService{
 
 
         HashMap<String, Object> userResponse = new HashMap<>();
+        userResponse.put("id", id_user);
+        userResponse.put("name", name);
+        userResponse.put("email", email);
         userResponse.put("userDetail", userDetail);
         userResponse.put("account", account);
 
         return new HashMap<>(userResponse);
-
 
     }
 }

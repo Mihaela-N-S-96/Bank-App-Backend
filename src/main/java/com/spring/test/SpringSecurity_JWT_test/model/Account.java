@@ -22,6 +22,8 @@ public class Account {
     private Double savings;
     @Column(name="deposit")
     private Double deposit;
+    @Column(name = "unique")
+    private String unique;
 
     @Column(name="balance")
     private Double balance;
@@ -167,6 +169,14 @@ public Account(){}
 
     public void setDeposit(Double deposit) {
         this.deposit = deposit;
+    }
+
+    public String getUnique() {
+        return unique;
+    }
+
+    public void setUnique(String unique) {
+        this.unique = unique;
     }
 }
 

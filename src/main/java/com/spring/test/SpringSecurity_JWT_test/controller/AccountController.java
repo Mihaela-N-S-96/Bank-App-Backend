@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -23,6 +24,11 @@ public class AccountController {
 
     @Autowired
     private BalanceService balanceService;
+
+    @GetMapping("/")
+    public List<Account> getAllAccountsByUserId(@RequestParam Integer id){
+        return accountService.getAccountsByUserId(id);
+    }
 
     @PostMapping("/account")
     public Account addAccount(@RequestBody Account account){
