@@ -50,7 +50,7 @@ public class LoanServiceImpl implements LoanService{
     }
 
     public Double getSumOfRateByAccountId(Integer id, Double current_rate){
-        if(current_rate == null)
+        if(loanRepository.getSumOfRates(id) == null)
             return 0.00;
         else
         return current_rate + loanRepository.getSumOfRates(id);
