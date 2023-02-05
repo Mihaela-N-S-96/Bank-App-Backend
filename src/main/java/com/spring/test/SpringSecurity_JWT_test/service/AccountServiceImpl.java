@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService{
         User user = userRepository.findByEmail(email);
         account.setUser(user);
 
-        account.setUnique(generateUniqueCode());
+//        account.setUnique(generateUniqueCode());
         account = accountRepository.save(account);
         return account;
     }

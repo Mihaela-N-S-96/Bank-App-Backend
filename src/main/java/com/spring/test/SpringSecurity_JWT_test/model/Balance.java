@@ -1,12 +1,13 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name = "balance")
 @Table(name = "balance")
 public class Balance {
 
@@ -26,10 +27,17 @@ public class Balance {
     @Column(name = "details")
     private String details;
 
+    @Column(name = "account_id" , insertable = false, updatable = false)
+    private Integer account_id;
+
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     @JsonIgnoreProperties("balance")
     private Account account;
+
+    public Balance() {
+    }
 
     public Balance(Integer id, Double balance, String status, Date date, String details) {
         this.id = id;

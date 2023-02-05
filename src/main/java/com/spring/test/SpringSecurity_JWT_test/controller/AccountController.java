@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/accounts")
@@ -49,6 +50,12 @@ public class AccountController {
 //        System.out.println(balance);
         return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
                                                                       HttpStatus.OK);
+    }
+
+    @GetMapping("/deposit/balance")
+    public List<Balance> addToBalance(@RequestParam Integer id){
+
+        return balanceService.getAllBalanceByAccountId(id);
     }
 
 }

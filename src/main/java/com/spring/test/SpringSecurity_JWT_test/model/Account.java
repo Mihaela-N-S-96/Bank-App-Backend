@@ -3,8 +3,6 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -19,14 +17,14 @@ public class Account {
     @Column(name="currency")
     private String currency;
     @Column(name="savings")
-    private Double savings;
+    private Double savings = 0.00;
     @Column(name="deposit")
-    private Double deposit;
-    @Column(name = "unique")
-    private String unique;
+    private Double deposit = 0.00;
+//    @Column(name = "unique")
+//    private String unique;
 
     @Column(name="balance")
-    private Double balance;
+    private Double balance = 0.00;
 
     @Column(name = "type_of_plan")
     private String type_of_plan;
@@ -171,13 +169,13 @@ public Account(){}
         this.deposit = deposit;
     }
 
-    public String getUnique() {
-        return unique;
-    }
-
-    public void setUnique(String unique) {
-        this.unique = unique;
-    }
+//    public String getUnique() {
+//        return unique;
+//    }
+//
+//    public void setUnique(String unique) {
+//        this.unique = unique;
+//    }
 }
 
 

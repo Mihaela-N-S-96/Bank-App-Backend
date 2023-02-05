@@ -40,7 +40,6 @@ public class LoanController {
     @PostMapping("/check")
     public Loan approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
 
-
         return loanService.approveRate(id, loan);
     }
 

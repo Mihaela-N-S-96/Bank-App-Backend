@@ -1,6 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
 import com.spring.test.SpringSecurity_JWT_test.model.*;
+import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.HistoryLoanRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
     @Resource
     private LoanRepository loanRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
 
     @Transactional
     public void saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id){
@@ -36,6 +40,7 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
     @Transactional
     public List<LoanJoinHistory> getPayResponse(HistoryLoan historyLoan,
                                                        Integer id_loan, Integer account_id){
+
         Optional<Loan> loan = loanRepository.findById(id_loan);
 
         saveLoan(historyLoan, id_loan, account_id);
@@ -46,6 +51,7 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
             System.out.println("account_id= "+account_id +" , "+ sumOfPayments+ " rate: "+loan.get().getRate());
            loanRepository.setTotalPaidById(id_loan, sumOfPayments);
            loan.get().setTotal_paid(sumOfPayments);
+           accountRepository.decreasesValueFromBalance(loan.get().getRate(), account_id);
         }
 
         List<LoanJoinHistory> responseObjectList = new ArrayList<>();

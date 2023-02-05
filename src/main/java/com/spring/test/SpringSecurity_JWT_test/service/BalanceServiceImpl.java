@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,5 +56,10 @@ public class BalanceServiceImpl implements BalanceService{
         balanceResponse.put("status", balanceObject.getStatus());
 
         return  new HashMap<>(balanceResponse);
+    }
+
+    public List<Balance> getAllBalanceByAccountId(Integer id){
+
+        return balanceRepository.getAllBalanceByAccountId(id);
     }
 }
