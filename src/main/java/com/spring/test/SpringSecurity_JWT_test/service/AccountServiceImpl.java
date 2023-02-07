@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -74,5 +75,21 @@ public class AccountServiceImpl implements AccountService{
         return  accountRepository.findByUserId(id);
     }
 
+    @Transactional
+    public HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan){
+         accountRepository.editTypeOfPlanByAccountId(id_account,type_of_plan );
 
+         Account account = accountRepository.findById(id_account).get();
+         Account responseAccount = new Account(account.getId(), account.getCurrency(), account.getSavings(), account.getDeposit(), account.getBalance(), account.getType_of_plan(), account.getCreated_at());
+
+         HashMap<String, Object> responseEntity = new HashMap<>();
+         responseEntity.put("account", responseAccount);
+
+         return responseEntity;
+    }
+
+@Transactional
+    public void deleteByAccountId(Integer id_account){
+        accountRepository.deleteByIdWithCascade(id_account);
+    }
 }

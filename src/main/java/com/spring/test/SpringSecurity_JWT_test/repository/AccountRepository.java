@@ -37,6 +37,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("UPDATE accounts a SET a.balance = a.balance + :value where a.user_id = :id and a.currency = :currency")
     public void addTransferToBalance(Double value, Integer id, String currency);
 
+    @Modifying
+    @Query("UPDATE accounts a SET a.type_of_plan = :type_of_plan WHERE a.id = :id_account")
+    public void editTypeOfPlanByAccountId(Integer id_account, String type_of_plan);
+
 
     @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
     public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
@@ -62,5 +66,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Modifying(flushAutomatically = true)
     @Query("UPDATE accounts a SET a.savings = a.savings - :value WHERE a.id = :account_id")
     public void decreasesValueFromSavings(Double value, Integer account_id);
+
+    @Modifying
+    @Query("DELETE FROM accounts s WHERE s.id = :id")
+    void deleteByIdWithCascade(Integer id);
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,5 +58,12 @@ public class SavingServiceImpl implements SavingService{
 
         return new HashMap<>(savingResponse);
 
+    }
+
+    @Transactional
+    public List<Saving> addValueToSavingByIdSaving(Integer id, Double value, Integer id_account){
+        savingRepository.addValueToSavingByIdSaving(id, value);
+
+       return savingRepository.getAllSavingsByAccountId(id_account);
     }
 }

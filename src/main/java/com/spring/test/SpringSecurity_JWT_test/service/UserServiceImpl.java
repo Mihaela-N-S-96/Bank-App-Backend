@@ -87,4 +87,20 @@ public class UserServiceImpl implements UserService{
         return new HashMap<>(userResponse);
 
     }
+
+    public void editUserDetailsByUserId(Integer id, UserDetail userDetail){
+        UserDetail userDetailObj = new UserDetail();
+        userDetailObj = userDetailRepository.getUserDetailsByUserId(id);
+
+        userDetailObj.setFirst_name(userDetail.getFirst_name());
+        userDetailObj.setLast_name(userDetail.getLast_name());
+        userDetailObj.setCountry(userDetail.getCountry());
+        userDetailObj.setBirthday(userDetail.getBirthday());
+        userDetailObj.setAddress(userDetail.getAddress());
+        userDetailObj.setGender(userDetail.getGender());
+        userDetailObj.setMobile(userDetail.getMobile());
+        userDetailObj.setCreated_at(userDetail.getCreated_at());
+
+        userDetailRepository.saveAndFlush(userDetailObj);
+    }
 }

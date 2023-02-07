@@ -39,7 +39,7 @@ public class Account {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+//    @JsonIgnore //asta era necesar nu ai stiu unde. Verifica restul responsu ruilor
     private User user;
 
     @JsonIgnoreProperties(value = {"loans", "user"})

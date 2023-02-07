@@ -26,6 +26,9 @@ public class Saving {
     @Column(name = "details")
     private String details;
 
+    @Column(name = "account_id", insertable = false, updatable = false)
+    private Integer account_id;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     @JsonIgnoreProperties("savings")

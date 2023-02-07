@@ -1,7 +1,9 @@
 package com.spring.test.SpringSecurity_JWT_test.repository;
 
 import com.spring.test.SpringSecurity_JWT_test.model.User;
+import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
@@ -14,5 +16,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 
-    // public Optional<User> findById(Integer id);
+
 }

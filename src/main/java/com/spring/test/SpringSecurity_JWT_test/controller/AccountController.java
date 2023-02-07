@@ -58,4 +58,17 @@ public class AccountController {
         return balanceService.getAllBalanceByAccountId(id);
     }
 
+    @PatchMapping("/edit")
+    public ResponseEntity<Object> editAccount(@RequestParam Integer id, @RequestParam String type){
+
+        return new ResponseEntity<>(accountService.editTypeOfPlanByAccountId(id, type), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteAccount(@RequestParam Integer id){
+
+        accountService.deleteByAccountId(id);
+        return new ResponseEntity<>("Delete", HttpStatus.OK);
+    }
+
 }

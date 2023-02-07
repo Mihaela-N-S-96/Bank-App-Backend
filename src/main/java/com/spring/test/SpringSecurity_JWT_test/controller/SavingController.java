@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -34,10 +35,18 @@ public class SavingController {
 System.out.println(saving);
         return new ResponseEntity<>(savingService.getSavingResponse(saving,id), HttpStatus.OK);
     }
-//    @PostMapping("/withdraw")
-//    public ResponseEntity<Object> decreasesSaving(@RequestBody Saving saving,
-//                                            @RequestParam Integer id_account){
-//
-//        return new ResponseEntity<>(savingService.getSavingResponse(saving,id_account), HttpStatus.OK);
-//    }
+    @PostMapping("/withdraw")
+    public ResponseEntity<Object> decreasesSaving(@RequestBody Saving saving,
+                                            @RequestParam Integer id_account){
+
+        return new ResponseEntity<>(savingService.getSavingResponse(saving,id_account), HttpStatus.OK);
+    }
+
+    @PatchMapping("/add")
+    public List<Saving> increaseSaving(@RequestParam Integer id,
+                                       @RequestParam Double value,
+                                       @RequestParam Integer id_account){
+
+        return savingService.addValueToSavingByIdSaving(id, value, id_account);
+    }
 }
