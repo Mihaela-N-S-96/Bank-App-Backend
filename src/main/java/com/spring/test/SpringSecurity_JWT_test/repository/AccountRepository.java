@@ -1,23 +1,17 @@
 package com.spring.test.SpringSecurity_JWT_test.repository;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
-import com.spring.test.SpringSecurity_JWT_test.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 //@Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
-//    public User findByEmail(String email);
 
     public Optional<Account> findById(Integer id);
 
@@ -41,11 +35,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("UPDATE accounts a SET a.type_of_plan = :type_of_plan WHERE a.id = :id_account")
     public void editTypeOfPlanByAccountId(Integer id_account, String type_of_plan);
 
-
     @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
     public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
-//a.id, a.balance, a.currency, a.type_of_plan, a.savings, a.deposit, a.created_at
-    //a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan
+
     @Query(value = "SELECT a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan, a.user_id FROM accounts a " +
             "WHERE a.user_id = :id", nativeQuery = true)//and a.type_of_plan = ?2
     public ArrayList<Account> findByUserId(@Param(value = "id") Integer id);//, String type_of_plan
@@ -70,5 +62,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Modifying
     @Query("DELETE FROM accounts s WHERE s.id = :id")
     void deleteByIdWithCascade(Integer id);
+
+    @Query(value = "SELECT * FROM accounts a WHERE a.user_id = :user_id AND a.currency = :currency", nativeQuery = true)
+    public Account findOneByUserId(Integer user_id, String currency);
 
 }

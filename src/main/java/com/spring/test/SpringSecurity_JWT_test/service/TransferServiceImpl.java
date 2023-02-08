@@ -31,9 +31,23 @@ public class TransferServiceImpl implements TransferService{
     @Autowired
     private TransferRepository transferRepository;
 
+    // that methods save the second transfer (for receiver's history)
+    @Transactional
+    public void saveToTransferObject(Integer id_user, Account fromAccount, Transfer transfer ){
+
+        Transfer transferTo = new Transfer();
+        Account toAccount = new Account();
+        toAccount = accountRepository.findOneByUserId(id_user, fromAccount.getCurrency());
+        transferTo.setAccount(toAccount);
+        transferTo.setDate(transfer.getDate());
+        transferTo.setDetails(transfer.getDetails());
+        transferTo.setTransfer(transfer.getTransfer());
+        transferRepository.save(transferTo);
+    }
+
     @Transactional
     public Transfer saveTransfer(Transfer transfer, Integer id_account, String email) {
-        Account account = new Account();
+        Account fromAccount = new Account();
         Integer id_user;
 
          accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
@@ -41,7 +55,7 @@ public class TransferServiceImpl implements TransferService{
          if(!accountRepository.findById(id_account).isPresent()){
              throw new RequestException("Can not find account with this id!");
          } else {
-              account = accountService.findById(id_account).get();
+             fromAccount = accountService.findById(id_account).get();
          }
 
         if(userRepository.findByEmail(email) == null){
@@ -50,10 +64,13 @@ public class TransferServiceImpl implements TransferService{
             id_user = userRepository.findByEmail(email).getId();
         }
 
-        accountRepository.addTransferToBalance(transfer.getTransfer(), id_user, account.getCurrency());
+        accountRepository.addTransferToBalance(transfer.getTransfer(), id_user, fromAccount.getCurrency());
 
-        transfer.setAccount(account);
+        transfer.setAccount(fromAccount);
         transfer = transferRepository.save(transfer);
+
+        saveToTransferObject( id_user, fromAccount, transfer );
+
 
         return new Transfer(transfer.getId(), transfer.getTransfer(), transfer.getDate(), transfer.getDetails());
 

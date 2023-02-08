@@ -11,4 +11,6 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
 
     @Query(value = "SELECT * FROM transfers t WHERE t.account_id = :account_id", nativeQuery = true)
     public ArrayList<Transfer> getAllTransfersByAccountId(Integer account_id);
+
+
 }
