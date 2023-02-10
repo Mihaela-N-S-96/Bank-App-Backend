@@ -88,8 +88,9 @@ public class AccountServiceImpl implements AccountService{
          return responseEntity;
     }
 
-@Transactional
+    @Transactional
     public void deleteByAccountId(Integer id_account){
+
         accountRepository.deleteByIdWithCascade(id_account);
     }
 }

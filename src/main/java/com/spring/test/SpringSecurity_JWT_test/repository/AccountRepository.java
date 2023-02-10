@@ -59,8 +59,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("UPDATE accounts a SET a.savings = a.savings - :value WHERE a.id = :account_id")
     public void decreasesValueFromSavings(Double value, Integer account_id);
 
-    @Modifying
-    @Query("DELETE FROM accounts s WHERE s.id = :id")
+    @Modifying(flushAutomatically = true)
+    @Query(value = "DELETE FROM accounts s WHERE s.id = :id")
     void deleteByIdWithCascade(Integer id);
 
     @Query(value = "SELECT * FROM accounts a WHERE a.user_id = :user_id AND a.currency = :currency", nativeQuery = true)
