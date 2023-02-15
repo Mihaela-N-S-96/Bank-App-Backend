@@ -40,7 +40,7 @@ public class UserController {
         //return userRepository.findById(id);
     }
 
-    @PutMapping("/edit")
+    @PatchMapping("/edit")
     public ResponseEntity<String> editUserDetails(@RequestParam Integer id, @RequestBody UserDetail userDetail){
 
         userService.editUserDetailsByUserId(id, userDetail);
