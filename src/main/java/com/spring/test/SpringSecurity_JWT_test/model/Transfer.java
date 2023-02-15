@@ -14,17 +14,50 @@ public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(name = "transfer")
     private Double transfer;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date")
     private Date date;
+
+    @Column(name = "details")
     private String details;
 
+    @Column(name = "to_receiver_name")
+    private String to_receiver_name;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     @JsonIgnoreProperties("exchanges")
     private Account account;
+
+
+    public String getTo_receiver_name() {
+        return to_receiver_name;
+    }
+
+    public void setTo_receiver_name(String to_receiver_name) {
+        this.to_receiver_name = to_receiver_name;
+    }
+
+    //    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "to_account_id")
+//    @JsonIgnoreProperties("exchanges")
+//    private Account toAccount;
+
+    @Column(name = "from_sender_name")
+    private String from_sender_name;
+    @Column(name = "to_account_id")
+    private Integer to_account_id;
+
+    public Integer getTo_account_id() {
+        return to_account_id;
+    }
+
+    public void setTo_account_id(Integer to_account_id) {
+        this.to_account_id = to_account_id;
+    }
 
     public Transfer() {
     }
@@ -35,6 +68,7 @@ public class Transfer {
         this.date = date;
         this.details = details;
     }
+
 
     public Integer getId() {
         return id;
@@ -66,6 +100,14 @@ public class Transfer {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getFrom_sender_name() {
+        return from_sender_name;
+    }
+
+    public void setFrom_sender_name(String from_sender_name) {
+        this.from_sender_name = from_sender_name;
     }
 
     public Account getAccount() {

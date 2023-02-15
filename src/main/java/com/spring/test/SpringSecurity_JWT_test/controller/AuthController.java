@@ -5,10 +5,13 @@ import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
+import com.spring.test.SpringSecurity_JWT_test.repository.OtpRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.RoleRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.JwtUtils;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
+import com.spring.test.SpringSecurity_JWT_test.service.EmailService;
+import com.spring.test.SpringSecurity_JWT_test.service.OtpService;
 import com.spring.test.SpringSecurity_JWT_test.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
+
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 
@@ -53,6 +61,15 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OtpService otpService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private OtpRepository otpRepository;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest) {
 
@@ -74,8 +91,8 @@ public class AuthController {
                 roles));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
+    @PostMapping("/otp")
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             logger.warn("Username is already taken!");
             throw new RequestException("Username is already taken!");
@@ -84,6 +101,37 @@ public class AuthController {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             logger.warn("Email is already in use!");
             throw new RequestException("Email is already in use!");
+        }
+
+        // Generate and send OTP to user's email
+        String otp = otpService.generateOTP();
+        System.out.println(otp);
+        Otp otpObj = new Otp();
+        otpObj.setOtpnum(otp);
+        System.out.println(signUpRequest.getEmail());
+        otpObj.setEmail(signUpRequest.getEmail());
+        emailService.sendOTPEmail(signUpRequest, otp);
+
+        otpRepository.save(otpObj);
+
+        // Return the OTP for the user to validate
+        return ResponseEntity.status(HttpStatus.OK).body(otp);
+    }
+
+
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateOtp(@RequestBody  SignupRequest signUpRequest) {
+
+        String email = signUpRequest.getEmail();
+        String otpnum = signUpRequest.getOtpnum();
+
+        //getOtpByEmail
+        String dbOtp = otpRepository.findByEmail(signUpRequest.getEmail()).getOtpnum();
+
+        // Check if the OTP in the request matches the one in the DB
+        if (!otpnum.equals(dbOtp)) {
+            logger.warn("Invalid OTP!");
+            throw new RequestException("Invalid OTP!");
         }
 
         // Create new user's details
@@ -97,7 +145,6 @@ public class AuthController {
         roles.add(userRole);
         user.setRoles(roles);
 
-
         List<Account> first = signUpRequest.getAccount();
         UserDetail userDetail = signUpRequest.getUserDetail();
 
@@ -106,11 +153,52 @@ public class AuthController {
 
         try {
             userService.saveUser(user);
-        }catch (RuntimeException ex){
+            otpService.clearOTP(signUpRequest.getEmail());
+        } catch (RuntimeException ex) {
             logger.warn("Success: User was saved!");
-            return   ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
         }
-        return   ResponseEntity.status(HttpStatus.OK).body("Success");
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
-
 }
+
+
+
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
+//        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+//            logger.warn("Username is already taken!");
+//            throw new RequestException("Username is already taken!");
+//        }
+//
+//        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+//            logger.warn("Email is already in use!");
+//            throw new RequestException("Email is already in use!");
+//        }
+//
+//        // Create new user's details
+//        User user = new User(signUpRequest.getUsername(),
+//                signUpRequest.getEmail(),
+//                encoder.encode(signUpRequest.getPassword()));
+//
+//        Set<Role> roles = new HashSet<>();
+//        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+//                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//        roles.add(userRole);
+//        user.setRoles(roles);
+//
+//
+//        List<Account> first = signUpRequest.getAccount();
+//        UserDetail userDetail = signUpRequest.getUserDetail();
+//
+//        user.setUserDetail(userDetail);
+//        user.setAccount(first);
+//
+//        try {
+//            userService.saveUser(user);
+//        }catch (RuntimeException ex){
+//            logger.warn("Success: User was saved!");
+//            return   ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
+//        }
+//        return   ResponseEntity.status(HttpStatus.OK).body("Success");
+//    }

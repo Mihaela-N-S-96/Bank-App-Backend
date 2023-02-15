@@ -66,4 +66,14 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query(value = "SELECT * FROM accounts a WHERE a.user_id = :user_id AND a.currency = :currency", nativeQuery = true)
     public Account findOneByUserId(Integer user_id, String currency);
 
+    @Query(value = "SELECT u_details.first_name FROM user_details u_details INNER JOIN users u ON u.id = u_details.user_id\n" +
+            "WHERE u.email = :email", nativeQuery = true)
+    public String findFirstNameByEmail(String email);
+
+    @Query(value = "select u.first_name from user_details u where u.user_id = :user_id", nativeQuery = true)
+    public String findFirstNameByUserId(Integer user_id);
+
+    @Query(value = "select a.user_id from accounts a where a.id = :account_id", nativeQuery = true)
+    public Integer getUserIdByAccountId(Integer account_id);
+
 }

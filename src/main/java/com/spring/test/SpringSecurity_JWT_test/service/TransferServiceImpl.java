@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
-
 
 @Service
 public class TransferServiceImpl implements TransferService{
@@ -31,46 +31,50 @@ public class TransferServiceImpl implements TransferService{
     @Autowired
     private TransferRepository transferRepository;
 
-    // that methods save the second transfer (for receiver's history)
-    @Transactional
-    public void saveToTransferObject(Integer id_user, Account fromAccount, Transfer transfer ){
+    public ArrayList<Transfer> getAllAccountIdTransfers(Integer account_id){
 
-        Transfer transferTo = new Transfer();
-        Account toAccount = new Account();
-        toAccount = accountRepository.findOneByUserId(id_user, fromAccount.getCurrency());
-        transferTo.setAccount(toAccount);
-        transferTo.setDate(transfer.getDate());
-        transferTo.setDetails(transfer.getDetails());
-        transferTo.setTransfer(transfer.getTransfer());
-        transferRepository.save(transferTo);
+        return transferRepository.getAllTransfersByAccountId(account_id);
     }
 
     @Transactional
-    public Transfer saveTransfer(Transfer transfer, Integer id_account, String email) {
-        Account fromAccount = new Account();
+    public Transfer saveTransfer(Transfer transfer, Integer id_account, String email)  {
+        Account fromAccount;
         Integer id_user;
+        Integer from_user_id = accountRepository.getUserIdByAccountId(id_account);
 
-         accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
-
+        //Find the sender account by its id
          if(!accountRepository.findById(id_account).isPresent()){
+             log.error("Can not find sender's account with this id!");
              throw new RequestException("Can not find account with this id!");
+
          } else {
              fromAccount = accountService.findById(id_account).get();
          }
 
+         //Find the receiver account by email
         if(userRepository.findByEmail(email) == null){
+            log.error("Can not find user with this email!");
             throw new RequestException("Can not find user with this email!");
         }else {
             id_user = userRepository.findByEmail(email).getId();
+            if(accountRepository.findOneByUserId(id_user, fromAccount.getCurrency()) == null){
+                log.error("Can not find receiver's account with this id and this currency type!");
+                throw new RequestException("Can not find receiver's account with this id and this currency type!");
+            }else{
+                //If sender and receiver was identified, set their details in transfer table and make the transfer
+                //from sender's balance account to receiver's balance account
+                transfer.setAccount(fromAccount);
+                transfer.setTo_account_id(id_user);
+                transfer.setTo_receiver_name(accountRepository.findFirstNameByEmail(email));
+                transfer.setFrom_sender_name(accountRepository.findFirstNameByUserId(from_user_id));
+
+                accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
+                accountRepository.addTransferToBalance(transfer.getTransfer(), id_user, fromAccount.getCurrency());
+
+                transfer = transferRepository.save(transfer);
+            }
+
         }
-
-        accountRepository.addTransferToBalance(transfer.getTransfer(), id_user, fromAccount.getCurrency());
-
-        transfer.setAccount(fromAccount);
-        transfer = transferRepository.save(transfer);
-
-        saveToTransferObject( id_user, fromAccount, transfer );
-
 
         return new Transfer(transfer.getId(), transfer.getTransfer(), transfer.getDate(), transfer.getDetails());
 
@@ -92,4 +96,23 @@ public class TransferServiceImpl implements TransferService{
 
         return responseTransfer;
     }
+
+
+
 }
+
+
+
+// that methods save the second transfer (for receiver's history)
+//    @Transactional
+//    public void saveToTransferObject(Integer id_user, Account fromAccount, Transfer transfer ){
+//
+//        Transfer transferTo = new Transfer();
+//        Account toAccount = new Account();
+//        toAccount = accountRepository.findOneByUserId(id_user, fromAccount.getCurrency());
+//        transferTo.setAccount(toAccount);
+//        transferTo.setDate(transfer.getDate());
+//        transferTo.setDetails(transfer.getDetails());
+//        transferTo.setTransfer(transfer.getTransfer());
+//        transferRepository.save(transferTo);
+//    }

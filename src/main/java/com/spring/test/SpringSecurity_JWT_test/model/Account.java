@@ -37,7 +37,7 @@ public class Account {
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "user_id")
 //    @JsonIgnore //asta era necesar nu ai stiu unde. Verifica restul responsu ruilor
     private User user;
@@ -45,6 +45,9 @@ public class Account {
     @JsonIgnoreProperties(value = {"loans", "user"})
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
     private List<Loan> loans = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)//acum
+    private List<Saving> saving ;
 
 //    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    private List<Withdrawal> withdrawals = new ArrayList<>();

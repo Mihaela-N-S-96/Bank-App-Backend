@@ -15,18 +15,22 @@ public class SignupRequest {
     private String email;
     private String password;
     private Set<String> role;
+
+    private String otpnum;
     @JsonProperty("userDetail")
     private UserDetail userDetail;
     @JsonProperty("account")
      private List<Account> account;
 
      public SignupRequest(){}
-    public SignupRequest(String username, String email, String password, UserDetail userDetail, List<Account> account) {
+    public SignupRequest(String username, String email, String password, UserDetail userDetail, List<Account> account, String otpnum) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.userDetail = userDetail;
         this.account = account;
+        this.otpnum = otpnum;
+
     }
 
     public String getUsername() {
@@ -75,6 +79,14 @@ public class SignupRequest {
 
     public void setAccount(List<Account> account) {
         this.account = account;
+    }
+
+    public String getOtpnum() {
+        return otpnum;
+    }
+
+    public void setOtpnum(String otpnum) {
+        this.otpnum = otpnum;
     }
 
     @Override

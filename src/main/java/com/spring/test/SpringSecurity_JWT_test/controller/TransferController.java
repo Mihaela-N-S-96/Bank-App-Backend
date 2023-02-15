@@ -27,7 +27,7 @@ public class TransferController {
     @GetMapping("/")
     public ArrayList<Transfer> getAllTransfers(@RequestParam Integer id){
 
-        return  transferRepository.getAllTransfersByAccountId(id);
+        return  transferService.getAllAccountIdTransfers(id);
     }
 
     @PostMapping("/transfer")

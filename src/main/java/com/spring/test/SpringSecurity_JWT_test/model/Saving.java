@@ -29,7 +29,7 @@ public class Saving {
     @Column(name = "account_id", insertable = false, updatable = false)
     private Integer account_id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     @JsonIgnoreProperties("savings")
     private Account account;
