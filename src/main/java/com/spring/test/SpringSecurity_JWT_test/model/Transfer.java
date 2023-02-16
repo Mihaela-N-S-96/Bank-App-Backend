@@ -27,6 +27,9 @@ public class Transfer {
     @Column(name = "to_receiver_name")
     private String to_receiver_name;
 
+    @Column(name = "account_id", insertable = false, updatable = false)
+    private Integer account_id;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     @JsonIgnoreProperties("exchanges")
@@ -45,6 +48,7 @@ public class Transfer {
 //    @JoinColumn(name = "to_account_id")
 //    @JsonIgnoreProperties("exchanges")
 //    private Account toAccount;
+
 
     @Column(name = "from_sender_name")
     private String from_sender_name;
@@ -104,6 +108,14 @@ public class Transfer {
 
     public String getFrom_sender_name() {
         return from_sender_name;
+    }
+
+    public Integer getAccount_id() {
+        return account_id;
+    }
+
+    public void setAccount_id(Integer account_id) {
+        this.account_id = account_id;
     }
 
     public void setFrom_sender_name(String from_sender_name) {

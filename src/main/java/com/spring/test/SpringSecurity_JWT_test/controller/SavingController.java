@@ -25,14 +25,14 @@ public class SavingController {
     private SavingRepository savingRepository;
 
     @GetMapping("/")
-    public ArrayList<Saving> geatAllSavings(@RequestParam Integer id){
+    public ArrayList<Saving> getAllSavings(@RequestParam Integer id){
 
         return  savingRepository.getAllSavingsByAccountId(id);
     }
     @PostMapping("/new")
     public ResponseEntity<Object> addSaving(@RequestBody Saving saving,
                                             @RequestParam Integer id){
-System.out.println(saving);
+
         return new ResponseEntity<>(savingService.getSavingResponse(saving,id), HttpStatus.OK);
     }
     @PostMapping("/withdraw")

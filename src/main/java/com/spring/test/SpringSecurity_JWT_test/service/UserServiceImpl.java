@@ -1,19 +1,28 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserDetailRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
+import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 
 @Service
 public class UserServiceImpl implements UserService{
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -102,5 +111,16 @@ public class UserServiceImpl implements UserService{
         userDetailObj.setCreated_at(userDetail.getCreated_at());
 
         userDetailRepository.saveAndFlush(userDetailObj);
+    }
+
+    @Transactional
+    public void editUserPassword(User user){
+        if(!userRepository.existsByUsername(user.getUsername())){
+
+            throw new RequestException("This username dose not exist!");
+        }
+
+        userRepository.changeUserPassword(user.getUsername(), passwordEncoder.encode(user.getPassword()));
+
     }
 }

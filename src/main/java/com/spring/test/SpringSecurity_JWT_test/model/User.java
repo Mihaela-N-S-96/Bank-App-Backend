@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-@Entity
+@Entity(name = "users")
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
@@ -22,8 +22,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "username")
     private String username;
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
 
     @ManyToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY

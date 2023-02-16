@@ -64,7 +64,7 @@ public class TransferServiceImpl implements TransferService{
                 //If sender and receiver was identified, set their details in transfer table and make the transfer
                 //from sender's balance account to receiver's balance account
                 transfer.setAccount(fromAccount);
-                transfer.setTo_account_id(id_user);
+                transfer.setTo_account_id(accountRepository.findOneByUserId(id_user, fromAccount.getCurrency()).getId());//receiver_id
                 transfer.setTo_receiver_name(accountRepository.findFirstNameByEmail(email));
                 transfer.setFrom_sender_name(accountRepository.findFirstNameByUserId(from_user_id));
 
