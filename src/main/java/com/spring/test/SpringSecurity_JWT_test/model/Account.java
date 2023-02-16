@@ -37,7 +37,7 @@ public class Account {
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
 //    @JsonIgnore //asta era necesar nu ai stiu unde. Verifica restul responsu ruilor
     private User user;

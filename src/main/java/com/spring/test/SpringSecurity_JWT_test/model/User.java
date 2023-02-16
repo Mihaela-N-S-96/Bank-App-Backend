@@ -36,7 +36,7 @@ public class User {
     @JsonManagedReference
      private UserDetail userDetail;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("user")
     private List<Account> account = new ArrayList<>();
 
