@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/savings")
@@ -18,28 +17,29 @@ import java.util.Optional;
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class SavingController {
 
-    @Autowired
     private SavingService savingService;
 
-    @Autowired
-    private SavingRepository savingRepository;
+    public SavingController(SavingService savingService) {
+        this.savingService = savingService;
+    }
+
 
     @GetMapping("/")
     public ArrayList<Saving> getAllSavings(@RequestParam Integer id){
 
-        return  savingRepository.getAllSavingsByAccountId(id);
+        return  savingService.getAllSavings(id);
     }
     @PostMapping("/new")
-    public ResponseEntity<Object> addSaving(@RequestBody Saving saving,
-                                            @RequestParam Integer id){
+    public ResponseEntity<Object> addNewSaving(@RequestBody Saving saving,
+                                               @RequestParam Integer id){
 
-        return new ResponseEntity<>(savingService.getSavingResponse(saving,id), HttpStatus.OK);
+        return new ResponseEntity<>(savingService.addNewSaving(id,saving), HttpStatus.OK);
     }
     @PostMapping("/withdraw")
-    public ResponseEntity<Object> decreasesSaving(@RequestBody Saving saving,
-                                            @RequestParam Integer id_account){
+    public ResponseEntity<Object> withdrawSaving(@RequestBody Saving saving,
+                                                 @RequestParam Integer id_account){
 
-        return new ResponseEntity<>(savingService.getSavingResponse(saving,id_account), HttpStatus.OK);
+        return new ResponseEntity<>(savingService.getWithdrawResponse(saving,id_account), HttpStatus.OK);
     }
 
     @PatchMapping("/add")
