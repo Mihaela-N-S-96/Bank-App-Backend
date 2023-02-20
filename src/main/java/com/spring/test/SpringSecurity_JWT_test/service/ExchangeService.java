@@ -25,6 +25,9 @@ public class ExchangeService implements ExchangeServiceImpl{
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountServiceImpl accountService;
+
 
     public Double changeFromEuroToLei(Double euro){
         BigDecimal bd = new BigDecimal(euro * EURO_VALUE).setScale(2, RoundingMode.HALF_UP);
@@ -44,8 +47,8 @@ public class ExchangeService implements ExchangeServiceImpl{
                                               String changeToCurrency, Double value){
 
         Integer id_account;
-        accountRepository.decreasesValueFromBalance(exchange.getExchange(), current_account);
-
+       // accountRepository.decreasesValueFromBalance(exchange.getExchange(), current_account);
+        accountService.decreasesValueFromBalance(exchange.getExchange(), current_account);
         if(accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency) == null)
             throw new RequestException("The "+typeOfExchange+" exchange cannot be executed! The user does not have a "+changeToCurrency+" account.");
         id_account = accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency);

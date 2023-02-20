@@ -22,6 +22,9 @@ public class BalanceServiceImpl implements BalanceService{
     @Autowired
     private BalanceRepository balanceRepository;
 
+    @Autowired
+    private AccountServiceImpl accountService;
+
     public boolean validateBalance(Balance balance, Double value){
         if(value<= balance.getBalance())
             return true;
@@ -39,7 +42,8 @@ public class BalanceServiceImpl implements BalanceService{
             accountRepository.addValueToBalance(balance.getBalance(), id_account);
         else
             if(balance.getStatus().contains("withdraw") && validateBalance(balance, balance.getBalance()))
-                accountRepository.decreasesValueFromBalance(balance.getBalance(), id_account);
+               // accountRepository.decreasesValueFromBalance(balance.getBalance(), id_account);
+                accountService.decreasesValueFromBalance(balance.getBalance(), id_account);
             else throw new RequestException("Forbidden");
 
             return new Balance(balance.getId(), balance.getBalance(), balance.getStatus(), balance.getDate(), balance.getDetails());

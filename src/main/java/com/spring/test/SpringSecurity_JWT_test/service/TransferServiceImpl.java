@@ -32,6 +32,8 @@ public class TransferServiceImpl implements TransferService{
     @Autowired
     private TransferRepository transferRepository;
 
+
+
     public ArrayList<Transfer> getAllAccountIdTransfers(Integer account_id){
 
         return transferRepository.getAllTransfersByAccountId(account_id);
@@ -69,7 +71,8 @@ public class TransferServiceImpl implements TransferService{
                 transfer.setTo_receiver_name(accountRepository.findFirstNameByEmail(email));
                 transfer.setFrom_sender_name(accountRepository.findFirstNameByUserId(from_user_id));
 
-                accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
+//                accountRepository.decreasesValueFromBalance(transfer.getTransfer(), id_account);
+                accountService.decreasesValueFromBalance(transfer.getTransfer(), id_account);
                 accountRepository.addTransferToBalance(transfer.getTransfer(), id_user, fromAccount.getCurrency());
 
                 transfer = transferRepository.save(transfer);

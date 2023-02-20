@@ -20,4 +20,5 @@ public interface AccountService {
     public List<Account> getAccountsByUserId(Integer id);
     public HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan);
     public void deleteByAccountId(Integer id_account);
+
 }

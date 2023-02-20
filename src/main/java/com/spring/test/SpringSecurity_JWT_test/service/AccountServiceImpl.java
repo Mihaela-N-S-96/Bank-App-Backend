@@ -39,7 +39,6 @@ public class AccountServiceImpl implements AccountService{
         User user = userRepository.findByEmail(email);
         account.setUser(user);
 
-//        account.setUnique(generateUniqueCode());
         account = accountRepository.save(account);
         return account;
     }
@@ -51,14 +50,26 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Transactional
-    public void updateSavingsAccount(Double savings, Integer id){
-        accountRepository.updateSavingsAccount(savings, id);
+    public void addValueToSavings(Double value, Integer account_id){
+        Account account = findById(account_id).get();
+        account.setSavings(account.getSavings() + value);
+
+        accountRepository.save(account);
     }
 
     @Transactional
     public void decreasesValueFromBalance(Double value, Integer id){
-        accountRepository.decreasesValueFromBalance(value, id);
+        Account account = findById(id).get();
+        account.setBalance(account.getBalance() - value);
+
+        accountRepository.save(account);
     }
+
+    @Transactional
+    public void updateSavingsAccount(Double savings, Integer id){
+        accountRepository.updateSavingsAccount(savings, id);
+    }
+
     @Transactional
     public void  addValueToBalance(Double value, Integer id){
         accountRepository.addValueToBalance(value, id);

@@ -26,6 +26,8 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountServiceImpl accountService;
 
     @Transactional
     public void saveLoan(HistoryLoan historyLoan, Integer id, Integer account_id){
@@ -51,7 +53,8 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
             System.out.println("account_id= "+account_id +" , "+ sumOfPayments+ " rate: "+loan.get().getRate());
            loanRepository.setTotalPaidById(id_loan, sumOfPayments);
            loan.get().setTotal_paid(sumOfPayments);
-           accountRepository.decreasesValueFromBalance(loan.get().getRate(), account_id);
+//           accountRepository.decreasesValueFromBalance(loan.get().getRate(), account_id);
+            accountService.decreasesValueFromBalance(loan.get().getRate(), account_id);
         }
 
         List<LoanJoinHistory> responseObjectList = new ArrayList<>();

@@ -51,9 +51,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("UPDATE accounts a SET a.deposit = a.deposit - :value WHERE a.id = :account_id")
     public void decreasesValueFromDeposit(Double value, Integer account_id);
 
-    @Modifying(flushAutomatically = true)
-    @Query("UPDATE accounts a SET a.savings = a.savings + :value WHERE a.id = :account_id")
-    public void addValueToSavings(Double value, Integer account_id);
+//    @Modifying(flushAutomatically = true)
+//    @Query("UPDATE accounts a SET a.savings = a.savings + :value WHERE a.id = :account_id")
+//    public void addValueToSavings(Double value, Integer account_id);
 
     @Modifying(flushAutomatically = true)
     @Query("UPDATE accounts a SET a.savings = a.savings - :value WHERE a.id = :account_id")

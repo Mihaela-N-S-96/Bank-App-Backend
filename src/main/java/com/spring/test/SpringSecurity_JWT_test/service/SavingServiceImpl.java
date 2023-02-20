@@ -5,9 +5,7 @@ import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Saving;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.SavingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -18,21 +16,21 @@ import java.util.Optional;
 @Service
 public class SavingServiceImpl implements SavingService{
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private SavingRepository savingRepository;
+    private final AccountRepository accountRepository;
+    private final SavingRepository savingRepository;
+    private final AccountServiceImpl accountService;
 
 
-    public boolean validateSaving(Account account, Double value){
-        if(value<= account.getSavings())
-            return true;
-        else return false;
+    public SavingServiceImpl(AccountRepository accountRepository, SavingRepository savingRepository, AccountServiceImpl accountService) {
+        this.accountRepository = accountRepository;
+        this.savingRepository = savingRepository;
+        this.accountService = accountService;
+
     }
 
-    public boolean validateBalance(Account account, Double value){
-        if(value<= account.getBalance())
+
+    public boolean validateValue(Double dataBaseValue, Double newValue){
+        if(newValue <= dataBaseValue)
             return true;
         else return false;
     }
@@ -45,31 +43,44 @@ public class SavingServiceImpl implements SavingService{
         return true;
     }
 
-//    public Saving addValueToSavingBySavingId(Integer id, Double value){
-//        try {
-//            Saving saving = savingRepository.findOneById(id);
-//        }catch (Exception e){
-//            throw new RuntimeException("This service dose not exists!");
-//        }
-//
-//    }
-
     public boolean pocketIsEmpty(Integer id_saving){
         if(savingRepository.findOneById(id_saving).getTransfer() == 0)
             return true;
         return false;
     }
 
+    @Transactional
+    public void addValueToSavingBySavingId(Integer id, Double value){
+        try {
+            Saving saving = savingRepository.findOneById(id);
+            saving.setTransfer(saving.getTransfer() + value);
+            savingRepository.save(saving);
+
+        }catch (Exception e){
+            throw new RuntimeException("This service dose not exists!");
+        }
+
+    }
+    @Transactional
+    public void decreasesValueFromSavings(Double value, Integer id_saving){
+        Saving saving = savingRepository.findOneById(id_saving);
+        saving.setTransfer(saving.getTransfer() - value);
+
+        savingRepository.save(saving);
+    }
     public ArrayList<Saving> getAllSavings(Integer id){
+        if(savingRepository.getAllSavingsByAccountId(id).isEmpty())
+            throw new RequestException("You don't have savings yet!");
+
         return savingRepository.getAllSavingsByAccountId(id);
     }
 
     @Transactional
     public Saving addNewSaving(Integer id_account, Saving saving){
 
-        if(!savingExist(saving) && validateBalance(accountRepository.findById(id_account).get(), saving.getTransfer())){
-            accountRepository.decreasesValueFromBalance(saving.getTransfer(), id_account);
-            accountRepository.addValueToSavings(saving.getTransfer(), id_account);
+        if(!savingExist(saving) && validateValue(accountRepository.findById(id_account).get().getBalance(), saving.getTransfer())){
+            accountService.decreasesValueFromBalance(saving.getTransfer(), id_account);
+            accountService.addValueToSavings(saving.getTransfer(), id_account);
 
             saving.setAccount(accountRepository.findById(id_account).get());
             saving = savingRepository.save(saving);
@@ -80,14 +91,15 @@ public class SavingServiceImpl implements SavingService{
 
     }
 
+
     @Transactional
     public Saving withdrawSaving(Saving saving, Integer id){
         Optional<Account> account = accountRepository.findById(id);
         saving.setAccount(account.get());
 
-        if(validateSaving(account.get(), saving.getTransfer())) {
+        if(validateValue(account.get().getSavings(), saving.getTransfer())) {
             accountRepository.decreasesValueFromSavings(saving.getTransfer(), id);
-            savingRepository.decreasesValueFromSavings(saving.getTransfer(), saving.getId());
+            decreasesValueFromSavings(saving.getTransfer(), saving.getId());
             try {
                 if (pocketIsEmpty(saving.getId()))
                     savingRepository.delete(saving);
@@ -117,9 +129,9 @@ public class SavingServiceImpl implements SavingService{
 
     @Transactional
     public List<Saving> addValueToSavingByIdSaving(Integer id, Double value, Integer id_account){
-        savingRepository.addValueToSavingByIdSaving(id, value);
-        accountRepository.addValueToSavings(value,id_account);
-        accountRepository.decreasesValueFromBalance(value,id_account);
+        addValueToSavingBySavingId(id, value);
+        accountService.addValueToSavings(value,id_account);
+        accountService.decreasesValueFromBalance(value, id_account);
 
        return savingRepository.getAllSavingsByAccountId(id_account);
     }

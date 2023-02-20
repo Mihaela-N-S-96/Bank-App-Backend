@@ -19,9 +19,13 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountServiceImpl accountService;
+
     @Transactional
     public Withdrawal saveWithdrawal(Withdrawal withdrawal, Integer id){
-        accountRepository.decreasesValueFromBalance(withdrawal.getWithdrawal(), id);
+//        accountRepository.decreasesValueFromBalance(withdrawal.getWithdrawal(), id);
+        accountService.decreasesValueFromBalance(withdrawal.getWithdrawal(), id);
 
         Optional<Account> account = accountRepository.findById(id);
         withdrawal.setAccount(account.get());

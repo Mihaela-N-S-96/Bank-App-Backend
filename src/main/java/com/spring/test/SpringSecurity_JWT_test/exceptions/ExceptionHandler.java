@@ -11,7 +11,7 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {RequestException.class})
     public ResponseEntity<Object> handleSigninException(RequestException e){
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus badRequest = HttpStatus.NOT_FOUND;
 
         Exception signinException = new Exception(
                 e.getMessage(),
