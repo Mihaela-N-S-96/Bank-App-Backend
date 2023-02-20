@@ -38,8 +38,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query(value = "SELECT a.id FROM accounts a where a.user_id = :id and a.currency like :currency")//and a.type_of_plan = ?2
     public Integer findByIdAndTypeOfPlan(@Param(value = "id") Integer id, String currency);//, String type_of_plan
 
-    @Query(value = "SELECT a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan, a.user_id FROM accounts a " +
-            "WHERE a.user_id = :id", nativeQuery = true)//and a.type_of_plan = ?2
+//    @Query(value = "SELECT a.id, a.balance, a.created_at, a.currency, a.deposit, a.savings, a.type_of_plan, a.user_id FROM accounts a " +
+//            "WHERE a.user_id = :id", nativeQuery = true)//and a.type_of_plan = ?2
     public ArrayList<Account> findByUserId(@Param(value = "id") Integer id);//, String type_of_plan
 
 

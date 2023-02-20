@@ -9,6 +9,7 @@ import java.util.*;
 
 @Entity(name = "accounts")
 @Table(name = "accounts")
+@JsonIgnoreProperties({"user", "user_details", "loans"})
 public class Account {
 
     @Id

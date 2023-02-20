@@ -105,10 +105,8 @@ public class AuthController {
 
         // Generate and send OTP to user's email
         String otp = otpService.generateOTP();
-        System.out.println(otp);
         Otp otpObj = new Otp();
         otpObj.setOtpnum(otp);
-        System.out.println(signUpRequest.getEmail());
         otpObj.setEmail(signUpRequest.getEmail());
         emailService.sendOTPEmail(signUpRequest, otp);
 
@@ -155,10 +153,10 @@ public class AuthController {
             userService.saveUser(user);
             otpService.clearOTP(signUpRequest.getEmail());
         } catch (RuntimeException ex) {
-            logger.warn("Success: User was saved!");
+            logger.warn("User can not be saved!");
             return ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Success");
+        return ResponseEntity.status(HttpStatus.OK).body("User was saved!");
     }
 }
 
