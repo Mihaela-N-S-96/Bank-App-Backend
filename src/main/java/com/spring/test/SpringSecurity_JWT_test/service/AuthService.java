@@ -139,7 +139,7 @@ public class AuthService {
             emailService.sendOTPEmail(signUpRequest.getUserDetail().getUser(), otp);
          otpRepository.save(otpObj);
 
-    return ResponseEntity.status(HttpStatus.OK).body(otp);
+    return ResponseEntity.status(HttpStatus.OK).body("Verify your email");
 
         } catch (MessagingException e) {
 
