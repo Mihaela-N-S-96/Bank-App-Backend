@@ -18,7 +18,7 @@ public class DepositController {
 
     private final DepositService depositService;
     private final DepositRepository depositRepository;
-//    private final ValidationsServiceImpl validationsService;
+
 
     @Autowired
     public DepositController(DepositService depositService, DepositRepository depositRepository) {

@@ -1,15 +1,14 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.*;
 
-
+@Data
 @Entity(name = "accounts")
 @Table(name = "accounts")
-@JsonIgnoreProperties({"user", "user_details", "loans"})
 public class Account {
 
     @Id
@@ -21,8 +20,6 @@ public class Account {
     private Double savings = 0.00;
     @Column(name="deposit")
     private Double deposit = 0.00;
-//    @Column(name = "unique")
-//    private String unique;
 
     @Column(name="balance")
     private Double balance = 0.00;
@@ -34,13 +31,16 @@ public class Account {
     @Column(name="created_at")
     private Date created_at;
 
+    @Column(name = "active")
+    private Boolean active = false;
+
     @JsonIgnoreProperties(value = "user_id")
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-//    @JsonIgnore //asta era necesar nu ai stiu unde. Verifica restul responsu ruilor
+//    @JsonIgnore //
     private User user;
 
     @JsonIgnoreProperties(value = {"loans", "user"})
@@ -49,12 +49,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)//acum
     private List<Saving> saving ;
-
-//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-//    private List<Withdrawal> withdrawals = new ArrayList<>();
-
-
-    public Account(String currency, Double savings, Double balance,Double deposit, String type_of_plan, Date created_at) {
+    public Account(String currency, Double savings, Double balance, Double deposit, String type_of_plan, Date created_at) {
         this.currency = currency;
         this.savings = savings;
         this.balance = balance;
@@ -81,105 +76,10 @@ public class Account {
         this.created_at = created_at;
     }
 
-public Account(){}
-
-
-    public Integer getId() {
-        return id;
+    public Account() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
-    }
-
-    public Double getSavings() {
-        return savings;
-    }
-
-    public void setSavings(Double savings) {
-        this.savings = savings;
-    }
-
-    public String getType_of_plan() {
-        return type_of_plan;
-    }
-
-    public void setType_of_plan(String type_of_plan) {
-        this.type_of_plan = type_of_plan;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
-    }
-
-    public List<Loan> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(List<Loan> loans) {
-        this.loans = loans;
-    }
-
-//    public List<Withdrawal> getWithdrawals() {
-//        return withdrawals;
-//    }
-//
-//    public void setWithdrawals(List<Withdrawal> withdrawals) {
-//        this.withdrawals = withdrawals;
-//    }
-
-
-    public Double getDeposit() {
-        return deposit;
-    }
-
-    public void setDeposit(Double deposit) {
-        this.deposit = deposit;
-    }
-
-//    public String getUnique() {
-//        return unique;
-//    }
-//
-//    public void setUnique(String unique) {
-//        this.unique = unique;
-//    }
 }
+
 
 

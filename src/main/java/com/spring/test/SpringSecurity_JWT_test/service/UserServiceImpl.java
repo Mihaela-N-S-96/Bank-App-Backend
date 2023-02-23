@@ -1,5 +1,9 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
@@ -33,7 +37,8 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserDetailRepository userDetailRepository;
 
-
+    @Autowired
+    private AccountServiceImpl accountService;
     public Account getAccountFromUser(User user, int index){
 
         List<Account> account = user.getAccount();
@@ -82,17 +87,17 @@ public class UserServiceImpl implements UserService{
         UserDetail userDetail = new UserDetail();
         userDetail = userDetailRepository.getUserDetailsByUserId(id_user);
 
-        List<Account> account = new ArrayList<>();
+        ArrayList<Account> account = new ArrayList<>();
         account = accountRepository.findByUserId(id_user);
 
+        AccountSerializer serializer = new AccountSerializer();
 
         HashMap<String, Object> userResponse = new HashMap<>();
         userResponse.put("id", id_user);
         userResponse.put("name", name);
         userResponse.put("email", email);
         userResponse.put("userDetail", userDetail);
-        userResponse.put("account", account);
-
+        userResponse.put("account", serializer.deserializeList(account));
         return new HashMap<>(userResponse);
 
     }
@@ -124,3 +129,4 @@ public class UserServiceImpl implements UserService{
 
     }
 }
+

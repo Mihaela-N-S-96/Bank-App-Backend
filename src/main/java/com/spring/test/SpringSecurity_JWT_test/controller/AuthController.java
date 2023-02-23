@@ -5,11 +5,13 @@ import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
+import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.OtpRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.RoleRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.JwtUtils;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
+import com.spring.test.SpringSecurity_JWT_test.service.AuthService;
 import com.spring.test.SpringSecurity_JWT_test.service.EmailService;
 import com.spring.test.SpringSecurity_JWT_test.service.OtpService;
 import com.spring.test.SpringSecurity_JWT_test.service.UserService;
@@ -26,12 +28,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 
 import javax.mail.MessagingException;
+import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
@@ -70,93 +74,61 @@ public class AuthController {
     @Autowired
     private OtpRepository otpRepository;
 
+
+
+    @Autowired
+    private AuthService authService;
+
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest)  {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        ResponseEntity<?> response;
+        try {
+            response = authService.authenticateSignIn(loginRequest);
+        } catch (Exception e) {
+            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+        return response;
     }
 
     @PostMapping("/otp")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            logger.warn("Username is already taken!");
-            throw new RequestException("Username is already taken!");
+    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException{
+
+        ResponseEntity<?> response;
+        try{
+            response = authService.registerUserAndSendOtp(signUpRequest);
+        }catch (Exception e){
+            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The user can not be registered.");
         }
-
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            logger.warn("Email is already in use!");
-            throw new RequestException("Email is already in use!");
-        }
-
-        // Generate and send OTP to user's email
-        String otp = otpService.generateOTP();
-        Otp otpObj = new Otp();
-        otpObj.setOtpnum(otp);
-        otpObj.setEmail(signUpRequest.getEmail());
-        emailService.sendOTPEmail(signUpRequest, otp);
-
-        otpRepository.save(otpObj);
-
-        // Return the OTP for the user to validate
-        return ResponseEntity.status(HttpStatus.OK).body(otp);
+        return response;
     }
 
 
     @PostMapping("/validate")
-    public ResponseEntity<?> validateOtp(@RequestBody  SignupRequest signUpRequest) {
+    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email) {
 
-        String email = signUpRequest.getEmail();
-        String otpnum = signUpRequest.getOtpnum();
+      ResponseEntity<?> response;
+      try{
+          response = authService.validateOtp(otpnum, email);
+      }catch (Exception e){
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
+      }
 
-        //getOtpByEmail
-        String dbOtp = otpRepository.findByEmail(signUpRequest.getEmail()).getOtpnum();
+      return response;
+    }
 
-        // Check if the OTP in the request matches the one in the DB
-        if (!otpnum.equals(dbOtp)) {
-            logger.warn("Invalid OTP!");
-            throw new RequestException("Invalid OTP!");
-        }
+    @PostMapping("/resend/otp")
+    public ResponseEntity<?> resendOtp(@RequestParam  String email){
 
-        // Create new user's details
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(userRole);
-        user.setRoles(roles);
-
-        List<Account> first = signUpRequest.getAccount();
-        UserDetail userDetail = signUpRequest.getUserDetail();
-
-        user.setUserDetail(userDetail);
-        user.setAccount(first);
-
+        ResponseEntity<?> response;
         try {
-            userService.saveUser(user);
-            otpService.clearOTP(signUpRequest.getEmail());
-        } catch (RuntimeException ex) {
-            logger.warn("User can not be saved!");
-            return ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
+           response = authService.resendOtp(email);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("User was saved!");
+
+        return response;
     }
 }
 

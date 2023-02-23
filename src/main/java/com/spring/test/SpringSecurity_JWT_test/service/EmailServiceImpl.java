@@ -14,12 +14,11 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 
 @Service
-@Transactional
 public class EmailServiceImpl implements EmailService{
     @Autowired
     JavaMailSender mailSender;
 
-    public void sendOTPEmail(SignupRequest user, String OTP)
+    public void sendOTPEmail(User user, String OTP)
             throws UnsupportedEncodingException, MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -29,7 +28,7 @@ public class EmailServiceImpl implements EmailService{
 
         String subject = "Here's your One Time Password (OTP) - Expire in 5 minutes!";
 
-        String content = "<p>Hello " + user.getUserDetail().getFirst_name() + "</p>"
+        String content = "<p>Hello " + user.getUsername() + "</p>"
                 + "<p>For security reason, you're required to use the following "
                 + "One Time Password to login:</p>"
                 + "<p><b>" + OTP + "</b></p>"

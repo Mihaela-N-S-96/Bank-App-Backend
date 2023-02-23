@@ -5,6 +5,7 @@ import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
+import com.spring.test.SpringSecurity_JWT_test.service.AccountServiceImpl;
 import com.spring.test.SpringSecurity_JWT_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
 
     @GetMapping("/all")
 //    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

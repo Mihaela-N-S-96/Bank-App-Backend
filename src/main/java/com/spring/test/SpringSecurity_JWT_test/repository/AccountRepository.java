@@ -1,19 +1,22 @@
 package com.spring.test.SpringSecurity_JWT_test.repository;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
+import com.spring.test.SpringSecurity_JWT_test.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-//@Repository
+@Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
 
     public Optional<Account> findById(Integer id);
+
 
     @Modifying
     @Query("UPDATE accounts a SET a.savings = a.savings + :savings where a.user_id = :id")

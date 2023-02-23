@@ -20,8 +20,9 @@ public class OtpServiceImpl implements OtpService{
     }
 
     @Transactional
-    public void clearOTP(String email){
-        otpRepository.deleteByEmail(email);
+    public void clearOTP(String otpnum){
+
+        otpRepository.deleteByOtpnum(otpnum);
     }
 
 }

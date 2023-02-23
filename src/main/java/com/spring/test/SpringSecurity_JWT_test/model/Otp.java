@@ -1,9 +1,11 @@
 package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Data;
 
 import javax.persistence.*;
 
+@Data
 @Entity(name = "otp")
 @Table(name = "otp")
 public class Otp {
@@ -21,27 +23,5 @@ public class Otp {
     }
 
 
-    public String getOtpnum() {
-        return otpnum;
-    }
 
-    public void setOtpnum(String otpnum) {
-        this.otpnum = otpnum;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

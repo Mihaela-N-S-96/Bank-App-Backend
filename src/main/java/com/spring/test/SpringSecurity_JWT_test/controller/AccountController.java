@@ -3,6 +3,7 @@ package com.spring.test.SpringSecurity_JWT_test.controller;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Balance;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
+import com.spring.test.SpringSecurity_JWT_test.service.AccountSerializer;
 import com.spring.test.SpringSecurity_JWT_test.service.AccountService;
 import com.spring.test.SpringSecurity_JWT_test.service.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/accounts")
@@ -20,11 +20,14 @@ import java.util.Optional;
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
 
-    @Autowired
-    private BalanceService balanceService;
+    private final AccountService accountService;
+    private final BalanceService balanceService;
+
+    public AccountController(AccountService accountService, BalanceService balanceService) {
+        this.accountService = accountService;
+        this.balanceService = balanceService;
+    }
 
     @GetMapping("/")
     public List<Account> getAllAccountsByUserId(@RequestParam Integer id){
@@ -33,9 +36,13 @@ public class AccountController {
 
     @PostMapping("/account")
     public Account addAccount(@RequestBody Account account){
-        User user = account.getUser();
-        account.setUser(user);
-        return accountService.saveAccount(account);
+//        User user = account.getUser();
+//        account.setUser(user);
+        Account account1 = accountService.saveAccount(account);
+        AccountSerializer serializer = new AccountSerializer();
+        serializer.deserializeObject(account1);
+        System.out.println(account.toString());
+        return serializer.deserializeObject(account1);
     }
 
     @PostMapping("/savings")
@@ -47,7 +54,7 @@ public class AccountController {
     public ResponseEntity<Object> addToBalance(@RequestBody Balance balance,
                                                @RequestParam Integer id){
 
-//        System.out.println(balance);
+
         return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
                                                                       HttpStatus.OK);
     }

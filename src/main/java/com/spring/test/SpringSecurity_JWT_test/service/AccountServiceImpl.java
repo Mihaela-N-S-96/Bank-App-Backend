@@ -1,5 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -8,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static org.apache.naming.SelectorContext.prefix;
 
@@ -33,14 +35,23 @@ public class AccountServiceImpl implements AccountService{
         return code;
     }
 
+    @Transactional
     public Account saveAccount(Account account){
-        String email = account.getUser().getEmail();
 
-        User user = userRepository.findByEmail(email);
-        account.setUser(user);
+try {
+    String email = account.getUser().getEmail();
+    User user = userRepository.findByEmail(email);
+    account.setUser(user);
+   account = accountRepository.save(account);
 
-        account = accountRepository.save(account);
-        return account;
+    System.out.println(account.getCreated_at());
+    if(account == null)System.out.println("asta e null");
+    System.out.println("Account din saving "+account.toString());
+    return account;
+}catch (Exception e){
+    throw new RuntimeException("BAM");
+}
+
     }
 
     public Optional<Account> findById(Integer id){
@@ -104,4 +115,5 @@ public class AccountServiceImpl implements AccountService{
 
         accountRepository.deleteByIdWithCascade(id_account);
     }
+
 }

@@ -11,14 +11,14 @@ import java.util.Optional;
 @Component
 public interface AccountService {
 
-    public Optional<Account> findById(Integer id);
-        public Account saveAccount(Account account);
-    public void updateSavingsAccount(Double savings, Integer id);
-    public void decreasesValueFromBalance(Double withdrawal, Integer id);
-    public String getAccountType(Integer id);
-    public void  addValueToBalance(Double value, Integer id);
-    public List<Account> getAccountsByUserId(Integer id);
-    public HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan);
-    public void deleteByAccountId(Integer id_account);
+     Optional<Account> findById(Integer id);
+     Account saveAccount(Account account);
+     void updateSavingsAccount(Double savings, Integer id);
+     void decreasesValueFromBalance(Double withdrawal, Integer id);
+     String getAccountType(Integer id);
+     void  addValueToBalance(Double value, Integer id);
+     List<Account> getAccountsByUserId(Integer id);
+     HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan);
+     void deleteByAccountId(Integer id_account);
 
 }

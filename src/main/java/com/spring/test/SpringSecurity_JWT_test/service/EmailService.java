@@ -7,5 +7,5 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
 public interface EmailService {
-    public void sendOTPEmail(SignupRequest user, String OTP) throws UnsupportedEncodingException, MessagingException;
+    public void sendOTPEmail(User user, String OTP) throws UnsupportedEncodingException, MessagingException;
 }
