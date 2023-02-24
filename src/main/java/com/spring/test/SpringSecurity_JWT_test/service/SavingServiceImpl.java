@@ -5,6 +5,7 @@ import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Saving;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.SavingRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,8 +36,8 @@ public class SavingServiceImpl implements SavingService{
         else return false;
     }
 
-    public boolean savingExist(Saving saving){
-        List<Saving> savingList = savingRepository.findByDetails(saving.getDetails());
+    public boolean savingExist(Saving saving, Integer account_id){
+        List<Saving> savingList = savingRepository.findByDetailsAndAccountId(saving.getDetails(),account_id);
         if(savingList.isEmpty()){
             return false;
         }
@@ -75,20 +76,22 @@ public class SavingServiceImpl implements SavingService{
         return savingRepository.getAllSavingsByAccountId(id);
     }
 
+
     @Transactional
     public Saving addNewSaving(Integer id_account, Saving saving){
 
-        if(!savingExist(saving) && validateValue(accountRepository.findById(id_account).get().getBalance(), saving.getTransfer())){
+        if(!savingExist(saving,id_account) && validateValue(accountRepository.findById(id_account).get().getBalance(), saving.getTransfer())){
             accountService.decreasesValueFromBalance(saving.getTransfer(), id_account);
             accountService.addValueToSavings(saving.getTransfer(), id_account);
 
             saving.setAccount(accountRepository.findById(id_account).get());
             saving = savingRepository.save(saving);
+            saving.setAccount_id(saving.getAccount().getId()); // set the account_id field
+
             return saving;
         }
-        else if(savingExist(saving)) throw new RequestException("This saving already exists!");
+        else if(savingExist(saving,id_account)) throw new RequestException("This saving already exists!");
         else throw new RequestException("You don't have enough money in current balance!");
-
     }
 
 

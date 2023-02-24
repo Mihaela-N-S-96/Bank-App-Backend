@@ -36,8 +36,6 @@ public class AccountController {
 
     @PostMapping("/account")
     public Account addAccount(@RequestBody Account account){
-//        User user = account.getUser();
-//        account.setUser(user);
         Account account1 = accountService.saveAccount(account);
         AccountSerializer serializer = new AccountSerializer();
         serializer.deserializeObject(account1);

@@ -2,6 +2,7 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 @JsonIgnoreProperties(value = {"account"})
 @Entity(name= "loans")
 @Table(name = "loans")
+@Data
 public class Loan {
 
     @Id
@@ -17,17 +19,23 @@ public class Loan {
 
     @Column(name = "loan")
     private Double loan;
+
     @Column(name = "total_paid")
-    private Double total_paid;
+    private Double total_paid = 0.0;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date")
     private Date date;
+
     @Column(name = "details")
     private String details;
+
     @Column(name = "salary")
     private Double salary;
+
     @Column(name = "rate")
     private Double rate;
+
     @Column(name = "years")
     private Integer years;
 
@@ -42,83 +50,5 @@ public class Loan {
 
     public Loan (){}
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getAccount_id() {
-        return account_id;
-    }
-
-    public void setAccount_id(Integer account_id) {
-        this.account_id = account_id;
-    }
-
-    public Double getLoan() {
-        return loan;
-    }
-
-    public void setLoan(Double loan) {
-        this.loan = loan;
-    }
-
-    public Double getTotal_paid() {
-        return total_paid;
-    }
-
-    public void setTotal_paid(Double total_paid) {
-        this.total_paid = total_paid;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public Double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public Integer getYears() {
-        return years;
-    }
-
-    public void setYears(Integer years) {
-        this.years = years;
-    }
-
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
 }

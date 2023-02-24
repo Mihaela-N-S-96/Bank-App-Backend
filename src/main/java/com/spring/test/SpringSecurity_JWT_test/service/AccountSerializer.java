@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +18,13 @@ public class AccountSerializer extends JsonSerializer<Account> {
     @Override
     public void serialize(Account account, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
-System.out.println("aaa");
+
         gen.writeNumberField("id", account.getId());
         gen.writeStringField("currency", account.getCurrency());
         gen.writeNumberField("savings", account.getSavings());
         gen.writeNumberField("deposit", account.getDeposit());
         gen.writeNumberField("balance", account.getBalance());
         gen.writeStringField("type_of_plan", account.getType_of_plan());
-//        gen.writeStringField("created_at", account.getCreated_at().toString());
-//        gen.writeObjectField("loans", account.getLoans());
-//        gen.writeObjectField("saving", account.getSaving());
 
         gen.writeEndObject();
     }

@@ -1,9 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Saving;
-import com.spring.test.SpringSecurity_JWT_test.repository.SavingRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.SavingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
