@@ -1,5 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.HistoryLoan;
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory;
@@ -32,16 +33,17 @@ public class LoanController {
     }
 
     @PostMapping("/check")
-    public ResponseEntity<?> approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
+    public Loan approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
 
-        ResponseEntity<?> response;
-        try{
-            response = loanService.approveRate(id, loan);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
-        }
+       // ResponseEntity<?> response;
+//        try{
+           // response = loanService.approveRate(id, loan);
 
-        return response;
+//        }catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
+//        }
+
+        return loanService.approveRate(id, loan);
      }
 
     @PostMapping("/loan")

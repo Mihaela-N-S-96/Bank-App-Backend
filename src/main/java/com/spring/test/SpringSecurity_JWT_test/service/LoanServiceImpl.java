@@ -68,24 +68,26 @@ accountRepository.addValueToBalance(loan.getLoan(), id_account);
         return current_rate + loanRepository.getSumOfRates(id);
     }
 
-    public ResponseEntity<?> approveRate(Integer account_id, Loan loan){
+    public Loan approveRate(Integer account_id, Loan loan){
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
         int months = 12 * loan.getYears();
         Double current_rate = Double.valueOf(decimalFormat.format(loan.getLoan() / months));
 
         if(loanRepository.getNumberOfLoans(account_id) >= 3)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                    getCheckResponse(loan, "You have exceeded the maximum limit of 3 loans"));
+            throw new RuntimeException("limit");
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+//                    getCheckResponse(loan, "You have exceeded the maximum limit of 3 loans"));
 
         if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate))) {
             loan.setRate(current_rate);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    getCheckResponse(loan, "Your loan is approved"));
+            return loan;
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+//                    getCheckResponse(loan, "Your loan is approved"));
         }
-        else
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                    getCheckResponse(loan, "Unfortunately, your salary does not fit this request"));
+        else throw new RuntimeException("salary");
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+//                    getCheckResponse(loan, "Unfortunately, your salary does not fit this request"));
 
     }
 }
