@@ -1,5 +1,6 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -75,7 +76,7 @@ accountRepository.addValueToBalance(loan.getLoan(), id_account);
         Double current_rate = Double.valueOf(decimalFormat.format(loan.getLoan() / months));
 
         if(loanRepository.getNumberOfLoans(account_id) >= 3)
-            throw new RuntimeException("limit");
+            throw new RequestException("limit");
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
 //                    getCheckResponse(loan, "You have exceeded the maximum limit of 3 loans"));
 
@@ -85,7 +86,7 @@ accountRepository.addValueToBalance(loan.getLoan(), id_account);
 //            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
 //                    getCheckResponse(loan, "Your loan is approved"));
         }
-        else throw new RuntimeException("salary");
+        else throw new RequestException("salary");
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
 //                    getCheckResponse(loan, "Unfortunately, your salary does not fit this request"));
 
