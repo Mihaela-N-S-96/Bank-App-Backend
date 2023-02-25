@@ -38,4 +38,7 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
             "(l.id, h.date,l.details,l.total_paid,l.rate) " +
             "FROM loans l " + " JOIN history_loan h ON h.loan_id = l.id WHERE l.account_id = :account_id ORDER BY h.date DESC")
     ArrayList<LoanJoinHistory> findAllJoinHistoryLoanByAccountId(Integer account_id);
+
+    @Query(value ="SELECT COUNT(l.account_id) AS loans_number FROM loans l WHERE account_id = :id_account")
+    Integer getNumberOfLoans(Integer id_account);
 }

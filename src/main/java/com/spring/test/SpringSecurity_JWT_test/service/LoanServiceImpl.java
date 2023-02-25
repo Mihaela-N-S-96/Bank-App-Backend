@@ -7,9 +7,12 @@ import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.LoanRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -26,6 +29,14 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     private UserRepository userRepository;
 
+    private HashMap<String,?>getCheckResponse(Loan loan, String message){
+
+        HashMap response = new HashMap();
+        response.put("message", message);
+        response.put("loan", loan);
+
+        return  response;
+    }
     public Loan saveLoan(Loan loan, Integer id_account){
      Optional<Account> account = accountRepository.findById(id_account);
 
@@ -56,17 +67,25 @@ public class LoanServiceImpl implements LoanService{
         return current_rate + loanRepository.getSumOfRates(id);
     }
 
-    public Loan approveRate(Integer account_id, Loan loan){
+    public ResponseEntity<?> approveRate(Integer account_id, Loan loan){
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
         int months = 12 * loan.getYears();
         Double current_rate = Double.valueOf(decimalFormat.format(loan.getLoan() / months));
 
+        if(loanRepository.getNumberOfLoans(account_id) >= 3)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    getCheckResponse(loan, "You have exceeded the maximum limit of 3 loans"));
+
         if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate))) {
             loan.setRate(current_rate);
-            //throw new RequestException("Success");
-            return loan;
+//            throw new RequestException("Success");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                    getCheckResponse(loan, "Your loan is approved"));
         }
-        else throw new RequestException("Failed");
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    getCheckResponse(loan, "Unfortunately, your salary does not fit this request"));
+
     }
 }
