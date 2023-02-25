@@ -1,6 +1,5 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
-import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
@@ -11,10 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class LoanServiceImpl implements LoanService{
 
@@ -41,7 +42,7 @@ public class LoanServiceImpl implements LoanService{
      Optional<Account> account = accountRepository.findById(id_account);
 
      loan.setAccount(account.get());//convert Optional to Object -> account.get()
-
+accountRepository.addValueToBalance(loan.getLoan(), id_account);
 //        if(loanRepository.getSumOfPayByAccountId(id) == null )
             if(loan.getTotal_paid() == null)
             loan.setTotal_paid(0.0);
@@ -79,7 +80,6 @@ public class LoanServiceImpl implements LoanService{
 
         if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate))) {
             loan.setRate(current_rate);
-//            throw new RequestException("Success");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                     getCheckResponse(loan, "Your loan is approved"));
         }
