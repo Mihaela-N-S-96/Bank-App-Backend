@@ -35,14 +35,6 @@ public class LoanController {
     @PostMapping("/check")
     public Loan approveNewRate(@RequestBody Loan loan, @RequestParam Integer id){
 
-       // ResponseEntity<?> response;
-//        try{
-           // response = loanService.approveRate(id, loan);
-
-//        }catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
-//        }
-
         return loanService.approveRate(id, loan);
      }
 

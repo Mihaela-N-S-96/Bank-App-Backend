@@ -31,14 +31,6 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     private UserRepository userRepository;
 
-    private HashMap<String,?>getCheckResponse(Loan loan, String message){
-
-        HashMap response = new HashMap();
-        response.put("message", message);
-        response.put("loan", loan);
-
-        return  response;
-    }
     public Loan saveLoan(Loan loan, Integer id_account){
      Optional<Account> account = accountRepository.findById(id_account);
 
@@ -77,18 +69,12 @@ accountRepository.addValueToBalance(loan.getLoan(), id_account);
 
         if(loanRepository.getNumberOfLoans(account_id) >= 3)
             throw new RequestException("limit");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-//                    getCheckResponse(loan, "You have exceeded the maximum limit of 3 loans"));
 
         if(takeLoan(loan.getSalary(),getSumOfRateByAccountId(account_id, current_rate))) {
             loan.setRate(current_rate);
             return loan;
-//            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-//                    getCheckResponse(loan, "Your loan is approved"));
         }
         else throw new RequestException("salary");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-//                    getCheckResponse(loan, "Unfortunately, your salary does not fit this request"));
 
     }
 }

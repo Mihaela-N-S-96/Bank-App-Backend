@@ -137,7 +137,7 @@ public class AuthService {
             otpObj.setEmail(signUpRequest.getEmail());
 
             emailService.sendOTPEmail(signUpRequest.getUserDetail().getUser(), otp);
-         otpRepository.save(otpObj);
+            otpRepository.save(otpObj);
 
     return ResponseEntity.status(HttpStatus.OK).body("Verify your email");
 
@@ -194,7 +194,7 @@ public class AuthService {
             logger.warn("Otp can not be delete!");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Internal error");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("The account is active!");
+        return ResponseEntity.status(HttpStatus.OK).body("The account is active now!");
     }
 
     public ResponseEntity<?> resendOtp(String email) {
