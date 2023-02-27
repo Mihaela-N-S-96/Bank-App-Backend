@@ -155,22 +155,28 @@ public class AuthService {
         User userObject = new User();
         Otp otpObject = new Otp();
 
-        try {
-            userObject = userRepository.findByEmail(email);
-        }catch (HttpClientErrorException.NotFound ex){
-            logger.error("This email dose not exist");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Use the account email!");
-        }
+//        try {
+//            userObject = userRepository.findByEmail(email);
+//            if(userObject == null){
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
+//            }
+//        }catch (HttpClientErrorException.NotFound ex){
+//            logger.error("This email dose not exist");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
+//        }
 
         try {
             accountsList = accountRepository.findByUserId(userObject.getId());
         }catch (HttpClientErrorException.NotFound ex){
             logger.error("Can not find this user");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error3");
         }
 
         try {
             otpObject = otpRepository.findByOtpnumAndEmail(otpnum, email);
+            if(otpObject == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Otp or email is not valid!");
+            }
         }catch (HttpClientErrorException.NotFound ex){
             logger.error("Otp or email is not valid");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Otp or email is not valid!");

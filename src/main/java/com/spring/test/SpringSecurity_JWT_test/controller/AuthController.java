@@ -112,7 +112,7 @@ public class AuthController {
       try{
           response = authService.validateOtp(otpnum, email);
       }catch (Exception e){
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error1");
       }
 
       return response;
