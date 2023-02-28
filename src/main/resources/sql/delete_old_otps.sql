@@ -1,0 +1,8 @@
+DELIMITER $$
+
+CREATE PROCEDURE delete_old_otps()
+BEGIN
+  DELETE FROM otp WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 DAY);
+END $$
+
+DELIMITER ;

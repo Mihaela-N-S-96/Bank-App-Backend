@@ -65,7 +65,7 @@ public class AuthService {
     private AccountRepository accountRepository;
 
 
-
+@Transactional
     public ResponseEntity<?> authenticateSignIn(LoginRequest loginRequest)  {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -155,15 +155,15 @@ public class AuthService {
         User userObject = new User();
         Otp otpObject = new Otp();
 
-//        try {
-//            userObject = userRepository.findByEmail(email);
-//            if(userObject == null){
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
-//            }
-//        }catch (HttpClientErrorException.NotFound ex){
-//            logger.error("This email dose not exist");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
-//        }
+        try {
+            userObject = userRepository.findByEmail(email);
+            if(userObject == null){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
+            }
+        }catch (HttpClientErrorException.NotFound ex){
+            logger.error("This email dose not exist");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid email");
+        }
 
         try {
             accountsList = accountRepository.findByUserId(userObject.getId());
@@ -192,6 +192,7 @@ public class AuthService {
         try {
             for (Account account:accountsList
             ) {
+                System.out.println("save account");
                 account.setActive(true);
                 accountRepository.save(account);
             }

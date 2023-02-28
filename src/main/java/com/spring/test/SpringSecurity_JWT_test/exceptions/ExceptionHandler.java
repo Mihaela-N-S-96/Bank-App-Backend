@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {RequestException.class})
-    public ResponseEntity<Object> handleSigninException(RequestException e){
+    public ResponseEntity<Object> handleException(RequestException e){
         HttpStatus badRequest = HttpStatus.NOT_FOUND;
 
         Exception signinException = new Exception(

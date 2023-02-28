@@ -6,8 +6,17 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface OtpRepository extends JpaRepository<Otp, Integer> {
+
+    @Modifying
+    @Transactional
+    void deleteByCreatedAtBefore(LocalDateTime dateTime);
+    List<Otp> findByCreatedAtBefore(LocalDateTime dateTime);
 
     Otp findByOtpnum(String otpnum);
     Otp findByOtpnumAndEmail(String otpnum, String email);
