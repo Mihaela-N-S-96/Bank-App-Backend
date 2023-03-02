@@ -5,7 +5,6 @@ import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Saving;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.SavingRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,22 +51,21 @@ public class SavingServiceImpl implements SavingService{
 
     @Transactional
     public void addValueToSavingBySavingId(Integer id, Double value){
-        try {
             Saving saving = savingRepository.findOneById(id);
             saving.setTransfer(saving.getTransfer() + value);
             savingRepository.save(saving);
 
-        }catch (Exception e){
-            throw new RuntimeException("This service dose not exists!");
-        }
-
     }
     @Transactional
     public void decreasesValueFromSavings(Double value, Integer id_saving){
-        Saving saving = savingRepository.findOneById(id_saving);
-        saving.setTransfer(saving.getTransfer() - value);
+        try {
+            Saving saving = savingRepository.findOneById(id_saving);
+            saving.setTransfer(saving.getTransfer() - value);
 
-        savingRepository.save(saving);
+            savingRepository.save(saving);
+        }catch (Exception e){
+            throw new RequestException("This saving can not be added!");
+        }
     }
     public ArrayList<Saving> getAllSavings(Integer id){
         if(savingRepository.getAllSavingsByAccountId(id).isEmpty())
@@ -132,7 +130,11 @@ public class SavingServiceImpl implements SavingService{
 
     @Transactional
     public List<Saving> addValueToSavingByIdSaving(Integer id, Double value, Integer id_account){
-        addValueToSavingBySavingId(id, value);
+        try {
+            addValueToSavingBySavingId(id, value);
+        }catch (Exception e) {
+            throw new RequestException("This saving can not be added!");
+        }
         accountService.addValueToSavings(value,id_account);
         accountService.decreasesValueFromBalance(value, id_account);
 

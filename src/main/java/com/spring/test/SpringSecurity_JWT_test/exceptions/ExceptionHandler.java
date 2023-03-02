@@ -9,7 +9,8 @@ import java.time.ZonedDateTime;
 @ControllerAdvice
 public class ExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = {RequestException.class})
+    @org.springframework.web.bind.annotation.ExceptionHandler(value =
+            {RequestException.class})
     public ResponseEntity<Object> handleException(RequestException e){
         HttpStatus badRequest = HttpStatus.NOT_FOUND;
 
@@ -19,5 +20,18 @@ public class ExceptionHandler {
                 ZonedDateTime.now());
 
         return new ResponseEntity<>(signinException, badRequest);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value =
+            {OkRequestException.class})
+    public ResponseEntity<Object> okRequestException(OkRequestException e){
+        HttpStatus okRequest = HttpStatus.OK;
+
+        Exception savingException = new Exception(
+                e.getMessage(),
+                okRequest,
+                ZonedDateTime.now());
+
+        return new ResponseEntity<>(savingException, okRequest);
     }
 }

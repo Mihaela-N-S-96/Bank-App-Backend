@@ -20,11 +20,14 @@ import java.util.List;
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class LoanController {
 
-    @Autowired
-    private LoanService loanService;
 
-    @Autowired
-    private HistoryLoanService historyLoanService;
+    private final LoanService loanService;
+    private final HistoryLoanService historyLoanService;
+
+    public LoanController(LoanService loanService, HistoryLoanService historyLoanService) {
+        this.loanService = loanService;
+        this.historyLoanService = historyLoanService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<Object> getAllLoans(@RequestParam Integer id){

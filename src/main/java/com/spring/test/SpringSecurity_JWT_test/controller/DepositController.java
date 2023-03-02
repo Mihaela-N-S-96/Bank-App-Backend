@@ -17,22 +17,18 @@ import java.util.ArrayList;
 public class DepositController {
 
     private final DepositService depositService;
-    private final DepositRepository depositRepository;
 
 
     @Autowired
-    public DepositController(DepositService depositService, DepositRepository depositRepository) {
+    public DepositController(DepositService depositService) {
         this.depositService = depositService;
-        this.depositRepository = depositRepository;
-//        this.validationsService = validationsService;
     }
 
 
     @GetMapping("/")
     public ArrayList<Deposit> getAllDeposits(@RequestParam Integer id){
 
-//       validationsService.verifyIfIdExist(id,Deposit.class);
-        return  depositRepository.getAllDepositsByAccountId(id);
+        return  depositService.getDepositList(id);
     }
 
     @PostMapping("/new")

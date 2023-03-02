@@ -1,9 +1,9 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.model.Exchange;
-import com.spring.test.SpringSecurity_JWT_test.model.Saving;
 import com.spring.test.SpringSecurity_JWT_test.repository.ExchangeRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.ExchangeServiceImpl;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,16 @@ import java.util.ArrayList;
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
 public class ExchangeController {
 
-    @Autowired
-    private ExchangeServiceImpl exchangeService;
+    private final ExchangeServiceImpl exchangeService;
 
-    @Autowired
-    private ExchangeRepository exchangeRepository;
+    public ExchangeController(ExchangeServiceImpl exchangeService) {
+        this.exchangeService = exchangeService;
+    }
+
     @GetMapping("/")
     public ArrayList<Exchange> getAllExchanges(@RequestParam Integer id){
 
-        return  exchangeRepository.getAllExchangesByAccountId(id);
+        return  exchangeService.getExchangeList(id);
     }
 
     @PostMapping("/exchange")

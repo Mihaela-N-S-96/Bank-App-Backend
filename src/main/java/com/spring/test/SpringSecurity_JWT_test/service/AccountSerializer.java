@@ -52,8 +52,6 @@ public class AccountSerializer extends JsonSerializer<Account> {
         mapper.registerModule(module);
         String json = null;
 
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        mapper.setDateFormat(dateFormat);
         try {
             json = mapper.writeValueAsString(accountObject);
             Account deserializedAccount = mapper.readValue(json, Account.class);

@@ -27,17 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
-
 import javax.mail.MessagingException;
-import javax.naming.AuthenticationException;
-import javax.transaction.Transactional;
-import java.util.stream.Collectors;
+
 
 
 @RestController
@@ -112,7 +104,7 @@ public class AuthController {
       try{
           response = authService.validateOtp(otpnum, email);
       }catch (Exception e){
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error1");
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
       }
 
       return response;

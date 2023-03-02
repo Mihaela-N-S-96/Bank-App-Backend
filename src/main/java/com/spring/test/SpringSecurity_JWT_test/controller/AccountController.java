@@ -1,12 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Balance;
-import com.spring.test.SpringSecurity_JWT_test.model.User;
-import com.spring.test.SpringSecurity_JWT_test.service.AccountSerializer;
 import com.spring.test.SpringSecurity_JWT_test.service.AccountService;
 import com.spring.test.SpringSecurity_JWT_test.service.BalanceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +34,8 @@ public class AccountController {
 
     @PostMapping("/account")
     public Account addAccount(@RequestBody Account account){
-        Account account1 = accountService.saveAccount(account);
-        AccountSerializer serializer = new AccountSerializer();
-        serializer.deserializeObject(account1);
-        System.out.println(account.toString());
-        return serializer.deserializeObject(account1);
+
+        return accountService.saveAccount(account);
     }
 
     @PostMapping("/savings")
@@ -70,10 +65,16 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAccount(@RequestParam Integer id){
+    public ResponseEntity<?> deleteAccount(@RequestParam Integer id){
 
-        accountService.deleteByAccountId(id);
-        return new ResponseEntity<>("Delete", HttpStatus.OK);
+        ResponseEntity response;
+        try{
+            response = accountService.deleteByAccountId(id);
+        }catch (Exception e){
+            throw new RequestException(e.getMessage());
+        }
+
+        return response;
     }
 
 }

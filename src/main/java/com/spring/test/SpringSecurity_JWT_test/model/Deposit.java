@@ -2,10 +2,12 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @JsonIgnoreProperties(value = {"account"})
 @Entity(name = "deposit")
 @Table(name = "deposit")
@@ -31,6 +33,9 @@ public class Deposit {
     @JsonIgnoreProperties("deposit")
     private Account account;
 
+    public Deposit() {
+    }
+
     public Deposit(Integer id, Double transfer, String status, Date date, String details) {
         this.id = id;
         this.transfer = transfer;
@@ -39,51 +44,5 @@ public class Deposit {
         this.details = details;
     }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Double getTransfer() {
-        return transfer;
-    }
-
-    public void setTransfer(Double transfer) {
-        this.transfer = transfer;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

@@ -1,9 +1,5 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
@@ -11,10 +7,8 @@ import com.spring.test.SpringSecurity_JWT_test.model.UserDetail;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserDetailRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
-import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,7 +20,6 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @Autowired
     private UserRepository userRepository;
@@ -126,6 +119,15 @@ public class UserServiceImpl implements UserService{
         }
 
         userRepository.changeUserPassword(user.getUsername(), passwordEncoder.encode(user.getPassword()));
+
+    }
+
+    public List<User> getAllUsers(){
+
+        List<User> response = userRepository.findAll();
+
+        if(response.isEmpty()) throw new RequestException("This list is empty");
+            else return response;
 
     }
 }

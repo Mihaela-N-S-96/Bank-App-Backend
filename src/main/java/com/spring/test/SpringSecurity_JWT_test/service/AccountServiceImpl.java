@@ -1,15 +1,14 @@
 package com.spring.test.SpringSecurity_JWT_test.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,14 +16,20 @@ import java.util.*;
 
 import static org.apache.naming.SelectorContext.prefix;
 
+@Transactional
 @Service
 public class AccountServiceImpl implements AccountService{
 
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+//    @Autowired
+    private final AccountRepository accountRepository;
+
+    public AccountServiceImpl(UserRepository userRepository, AccountRepository accountRepository) {
+        this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
+    }
 
     public String generateUniqueCode(){
         Random rand = new Random();
@@ -35,23 +40,27 @@ public class AccountServiceImpl implements AccountService{
         return code;
     }
 
-    @Transactional
+
     public Account saveAccount(Account account){
 
-try {
-    String email = account.getUser().getEmail();
-    User user = userRepository.findByEmail(email);
-    account.setUser(user);
-   account = accountRepository.save(account);
+    try {
+        String email = account.getUser().getEmail();
+        User user = userRepository.findByEmail(email);
+        if(user == null) throw new RequestException("This user can not be identify! Please check your credentials!");
+        else {
+            account.setUser(user);
+            account = accountRepository.save(account);
 
-    System.out.println(account.getCreated_at());
-    if(account == null)System.out.println("asta e null");
-    System.out.println("Account din saving "+account.toString());
-    return account;
-}catch (Exception e){
-    throw new RuntimeException("BAM");
-}
+            AccountSerializer accountObject = new AccountSerializer();
 
+            return accountObject.deserializeObject(account);
+        }
+    }catch (RequestException e){
+        throw new RequestException(e.getMessage());
+    }
+    catch (Exception e){
+         throw new RequestException("This account can not be registered. Please check your request!");
+    }
     }
 
     public Optional<Account> findById(Integer id){
@@ -60,7 +69,7 @@ try {
         return account;
     }
 
-    @Transactional
+
     public void addValueToSavings(Double value, Integer account_id){
         Account account = findById(account_id).get();
         account.setSavings(account.getSavings() + value);
@@ -68,7 +77,7 @@ try {
         accountRepository.save(account);
     }
 
-    @Transactional
+
     public void decreasesValueFromBalance(Double value, Integer id){
         Account account = findById(id).get();
         account.setBalance(account.getBalance() - value);
@@ -76,12 +85,12 @@ try {
         accountRepository.save(account);
     }
 
-    @Transactional
+
     public void updateSavingsAccount(Double savings, Integer id){
         accountRepository.updateSavingsAccount(savings, id);
     }
 
-    @Transactional
+
     public void  addValueToBalance(Double value, Integer id){
         accountRepository.addValueToBalance(value, id);
     }
@@ -97,7 +106,7 @@ try {
         return  accountRepository.findByUserId(id);
     }
 
-    @Transactional
+
     public HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan){
          accountRepository.editTypeOfPlanByAccountId(id_account,type_of_plan );
 
@@ -110,10 +119,18 @@ try {
          return responseEntity;
     }
 
-    @Transactional
-    public void deleteByAccountId(Integer id_account){
 
-        accountRepository.deleteByIdWithCascade(id_account);
+    public ResponseEntity<?> deleteByAccountId(Integer id){
+
+        try {
+            accountRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException ex){
+            throw new RequestException("This account can not be deleted");
+        }catch (Exception ex){
+            throw new RequestException("Error delete. Internal error.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("This account was deleted with success");
     }
 
 }

@@ -25,11 +25,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.mail.MessagingException;
-import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -192,7 +190,6 @@ public class AuthService {
         try {
             for (Account account:accountsList
             ) {
-                System.out.println("save account");
                 account.setActive(true);
                 accountRepository.save(account);
             }

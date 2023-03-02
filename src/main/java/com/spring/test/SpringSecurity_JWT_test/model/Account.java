@@ -38,13 +38,13 @@ public class Account {
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)//EAGER
     @JoinColumn(name = "user_id")
 //    @JsonIgnore //
     private User user;
 
     @JsonIgnoreProperties(value = {"loans", "user"})
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)//EAGER
     private List<Loan> loans = new ArrayList<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)//acum

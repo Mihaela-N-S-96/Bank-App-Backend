@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Service
 public class TransferServiceImpl implements TransferService{
@@ -36,7 +35,10 @@ public class TransferServiceImpl implements TransferService{
 
     public ArrayList<Transfer> getAllAccountIdTransfers(Integer account_id){
 
-        return transferRepository.getAllTransfersByAccountId(account_id);
+        ArrayList<Transfer> response = transferRepository.getAllTransfersByAccountId(account_id);
+
+        if(response.isEmpty()) throw  new RequestException("This list is empty");
+            else  return response;
     }
 
     @Transactional
@@ -106,17 +108,3 @@ public class TransferServiceImpl implements TransferService{
 }
 
 
-
-// that methods save the second transfer (for receiver's history)
-//    @Transactional
-//    public void saveToTransferObject(Integer id_user, Account fromAccount, Transfer transfer ){
-//
-//        Transfer transferTo = new Transfer();
-//        Account toAccount = new Account();
-//        toAccount = accountRepository.findOneByUserId(id_user, fromAccount.getCurrency());
-//        transferTo.setAccount(toAccount);
-//        transferTo.setDate(transfer.getDate());
-//        transferTo.setDetails(transfer.getDetails());
-//        transferTo.setTransfer(transfer.getTransfer());
-//        transferRepository.save(transferTo);
-//    }

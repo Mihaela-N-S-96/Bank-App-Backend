@@ -6,11 +6,14 @@ import com.spring.test.SpringSecurity_JWT_test.model.Exchange;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.ExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
@@ -97,5 +100,13 @@ public class ExchangeService implements ExchangeServiceImpl{
         return new HashMap<>(exchangeResponse);
     }
 
+    public ArrayList<Exchange> getExchangeList(Integer id_account){
+
+        ArrayList<Exchange> response = new ArrayList<>();
+        response = exchangeRepository.getAllExchangesByAccountId(id_account);
+
+        if(response.isEmpty()) throw new RequestException("This list is empty");
+             else return response;
+    }
 
 }

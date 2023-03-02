@@ -46,11 +46,10 @@ public class HistoryLoanServiceImpl implements HistoryLoanService{
         Optional<Loan> loan = loanRepository.findById(id_loan);
 
         saveLoan(historyLoan, id_loan, account_id);
-        System.out.println("2=");
+
         if(loanRepository.getTotalPayByLoanId(id_loan) != null ) {
-            System.out.println("1=");
+
            Double sumOfPayments = loanRepository.getTotalPayByLoanId(id_loan) + loan.get().getRate();
-            System.out.println("account_id= "+account_id +" , "+ sumOfPayments+ " rate: "+loan.get().getRate());
            loanRepository.setTotalPaidById(id_loan, sumOfPayments);
            loan.get().setTotal_paid(sumOfPayments);
 //           accountRepository.decreasesValueFromBalance(loan.get().getRate(), account_id);

@@ -1,11 +1,8 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
-import com.spring.test.SpringSecurity_JWT_test.model.Exchange;
 import com.spring.test.SpringSecurity_JWT_test.model.Transfer;
-import com.spring.test.SpringSecurity_JWT_test.repository.ExchangeRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.TransferRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.TransferService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +16,12 @@ import java.util.ArrayList;
 public class TransferController {
 
 
-    @Autowired
-    private TransferService transferService;
+    private final TransferService transferService;
 
-    @Autowired
-    private TransferRepository transferRepository;
+    public TransferController(TransferService transferService) {
+        this.transferService = transferService;
+    }
+
     @GetMapping("/")
     public ArrayList<Transfer> getAllTransfers(@RequestParam Integer id){
 
