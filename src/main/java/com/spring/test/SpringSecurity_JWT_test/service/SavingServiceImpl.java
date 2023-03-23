@@ -57,14 +57,14 @@ public class SavingServiceImpl implements SavingService{
 
     }
     @Transactional
-    public void decreasesValueFromSavings(Double value, Integer id_saving){
+    public void decreasesValueFromSavingsEntity(Double value, Integer id_saving){
         try {
             Saving saving = savingRepository.findOneById(id_saving);
             saving.setTransfer(saving.getTransfer() - value);
 
             savingRepository.save(saving);
         }catch (Exception e){
-            throw new RequestException("This saving can not be added!");
+            throw new RequestException("This saving can not be decreased!");
         }
     }
     public ArrayList<Saving> getAllSavings(Integer id){
@@ -99,8 +99,8 @@ public class SavingServiceImpl implements SavingService{
         saving.setAccount(account.get());
 
         if(validateValue(account.get().getSavings(), saving.getTransfer())) {
-            accountRepository.decreasesValueFromSavings(saving.getTransfer(), id);
-            decreasesValueFromSavings(saving.getTransfer(), saving.getId());
+             accountService.decreasesValueFromSavings(saving.getTransfer(), id);
+             decreasesValueFromSavingsEntity(saving.getTransfer(), saving.getId());
             try {
                 if (pocketIsEmpty(saving.getId()))
                     savingRepository.delete(saving);
@@ -130,13 +130,12 @@ public class SavingServiceImpl implements SavingService{
 
     @Transactional
     public List<Saving> addValueToSavingByIdSaving(Integer id, Double value, Integer id_account){
-        try {
+
+        if(accountService.hasMoneyInAccount(value, id_account)==true){
             addValueToSavingBySavingId(id, value);
-        }catch (Exception e) {
-            throw new RequestException("This saving can not be added!");
-        }
-        accountService.addValueToSavings(value,id_account);
-        accountService.decreasesValueFromBalance(value, id_account);
+            accountService.addValueToSavings(value,id_account);
+            accountService.decreasesValueFromBalance(value, id_account);
+        } else throw new RequestException("You don't have enough money in account!");
 
        return savingRepository.getAllSavingsByAccountId(id_account);
     }

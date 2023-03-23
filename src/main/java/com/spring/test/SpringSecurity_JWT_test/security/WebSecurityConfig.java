@@ -92,6 +92,7 @@ public class WebSecurityConfig {
                 .antMatchers("/transfers/**").permitAll()
                 .antMatchers("/deposit/**").permitAll()
                 .antMatchers("/savings/**").permitAll()
+                .antMatchers("/balance/**").permitAll()
                 .anyRequest().authenticated();
 //.antMatchers("/user/**").permitAll()
         http.authenticationProvider(authenticationProvider());

@@ -44,6 +44,7 @@ public class ExchangeService implements ExchangeServiceImpl{
         return result;
     }
 
+
     @Transactional
     public void decreasesAndAddValueToBalance(Exchange exchange, Integer current_account,
                                               Integer user_id,String typeOfExchange,
@@ -52,11 +53,11 @@ public class ExchangeService implements ExchangeServiceImpl{
         Integer id_account;
        // accountRepository.decreasesValueFromBalance(exchange.getExchange(), current_account);
         accountService.decreasesValueFromBalance(exchange.getExchange(), current_account);
-        if(accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency) == null)
+        if(accountRepository.findByUserIdAndCurrency(user_id, changeToCurrency) == null)
             throw new RequestException("The "+typeOfExchange+" exchange cannot be executed! The user does not have a "+changeToCurrency+" account.");
-        id_account = accountRepository.findByIdAndTypeOfPlan(user_id, changeToCurrency);
+        id_account = accountRepository.findByUserIdAndCurrency(user_id, changeToCurrency).getId();
 
-        accountRepository.addValueToBalance(value, id_account);
+        accountService.addValueToBalance(value, id_account);
     }
 
     @Transactional

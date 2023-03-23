@@ -44,5 +44,12 @@ public class Deposit {
         this.details = details;
     }
 
+    public Deposit(Double transfer, String status, Date date, String details) {
+        this.transfer = transfer;
+        this.status = status;
+        this.date = date;
+        this.details = details;
+    }
+
 
 }

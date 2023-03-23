@@ -1,12 +1,10 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
-import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.HistoryLoan;
 import com.spring.test.SpringSecurity_JWT_test.model.Loan;
 import com.spring.test.SpringSecurity_JWT_test.model.LoanJoinHistory;
 import com.spring.test.SpringSecurity_JWT_test.service.HistoryLoanService;
 import com.spring.test.SpringSecurity_JWT_test.service.LoanService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +21,7 @@ public class LoanController {
 
     private final LoanService loanService;
     private final HistoryLoanService historyLoanService;
+
 
     public LoanController(LoanService loanService, HistoryLoanService historyLoanService) {
         this.loanService = loanService;
@@ -48,7 +47,9 @@ public class LoanController {
     }
 
     @PostMapping("/pay")
-    public List<LoanJoinHistory> addPayLoan(@RequestBody HistoryLoan historyLoan, @RequestParam Integer id, @RequestParam Integer account_id){//loan_id
+    public List<LoanJoinHistory> addPayLoan(@RequestBody HistoryLoan historyLoan,
+                                            @RequestParam Integer id,
+                                            @RequestParam Integer account_id){//loan_id
 
         return historyLoanService.getPayResponse(historyLoan, id, account_id);
     }

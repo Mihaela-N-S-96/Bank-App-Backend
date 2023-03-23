@@ -39,7 +39,7 @@ public class BalanceServiceImpl implements BalanceService{
 
         balance = balanceRepository.saveAndFlush(balance);
         if(balance.getStatus().contains("deposit"))
-            accountRepository.addValueToBalance(balance.getBalance(), id_account);
+            accountService.addValueToBalance(balance.getBalance(), id_account);
         else
             if(balance.getStatus().contains("withdraw") && validateBalance(balance, balance.getBalance()))
                // accountRepository.decreasesValueFromBalance(balance.getBalance(), id_account);

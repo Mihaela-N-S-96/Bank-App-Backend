@@ -4,24 +4,27 @@ import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
 import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.Deposit;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
+
 import com.spring.test.SpringSecurity_JWT_test.repository.DepositRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
+
 
 @Service
 public class DepositServiceImpl implements DepositService{
 
-    @Autowired
-    private AccountRepository accountRepository;
 
-    @Autowired
-    private DepositRepository depositRepository;
+    private final AccountRepository accountRepository;
+    private final DepositRepository depositRepository;
 
+    public DepositServiceImpl(  AccountRepository accountRepository, DepositRepository depositRepository) {
+        this.accountRepository = accountRepository;
+        this.depositRepository = depositRepository;
+    }
 
     public boolean validateDeposit(Account account, Double value){
         if(value<= account.getDeposit())
@@ -30,19 +33,41 @@ public class DepositServiceImpl implements DepositService{
     }
 
     @Transactional
-    public Deposit saveDeposit(Deposit deposit, Integer id){
-        Optional<Account> account = accountRepository.findById(id);
+    public void increaseDeposit_AccountEntity(Double value, Integer account_id) {
+        Account account = accountRepository.findById(account_id).get();
 
-        deposit.setAccount(account.get());
+        account.setDeposit(account.getDeposit() + value);
+        accountRepository.save(account);
+    }
 
-        deposit = depositRepository.save(deposit);
+    @Transactional
+    public void decreaseDeposit_AccountEntity(Double value, Integer account_id) {
+        Account account = accountRepository.findById(account_id).get();
+
+        account.setDeposit(account.getDeposit() - value);
+        accountRepository.save(account);
+    }
+
+    @Transactional
+    public void updateDepositFromAccount(Deposit deposit,Account account){
         if(deposit.getStatus().contains("deposit"))
-        accountRepository.addValueToDeposit(deposit.getTransfer(), id);
+            increaseDeposit_AccountEntity(deposit.getTransfer(), account.getId());
         else
-            if(deposit.getStatus().contains("withdraw") && validateDeposit(account.get(), deposit.getTransfer()))
-                accountRepository.decreasesValueFromDeposit(deposit.getTransfer(), id);
-            else throw new RequestException("Forbidden");
-            return new Deposit(deposit.getId(), deposit.getTransfer(), deposit.getStatus(), deposit.getDate(), deposit.getDetails());
+        if(deposit.getStatus().contains("withdraw") && validateDeposit(account, deposit.getTransfer()))
+            decreaseDeposit_AccountEntity(deposit.getTransfer(), account.getId());
+        else throw new RequestException("Forbidden");
+    }
+
+    @Transactional
+    public Deposit saveDeposit(Deposit deposit, Integer id){
+       Account account = accountRepository.getAccountById(id);
+
+        deposit.setAccount(account);
+        deposit = depositRepository.save(deposit);
+
+        updateDepositFromAccount(deposit, account);
+
+        return new Deposit(deposit.getId(), deposit.getTransfer(), deposit.getStatus(), deposit.getDate(), deposit.getDetails());
     }
 
     @Transactional
@@ -62,6 +87,6 @@ public class DepositServiceImpl implements DepositService{
 
     public ArrayList<Deposit> getDepositList(Integer id_account){
 
-        return depositRepository.getAllDepositsByAccount_Id(id_account);
+        return depositRepository.getAllDepositsByAccountId(id_account);
     }
 }

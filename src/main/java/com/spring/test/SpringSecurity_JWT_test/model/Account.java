@@ -38,7 +38,8 @@ public class Account {
     @Column(name = "user_id", insertable = false, updatable = false)
     private Integer user_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)//EAGER
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)//EAGER? -
     @JoinColumn(name = "user_id")
 //    @JsonIgnore //
     private User user;

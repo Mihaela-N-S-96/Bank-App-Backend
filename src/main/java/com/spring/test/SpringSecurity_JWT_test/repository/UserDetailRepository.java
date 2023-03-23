@@ -11,4 +11,7 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Integer>
 
     @Query(value = "SELECT * FROM user_details u where u.user_id = :id", nativeQuery = true)
     public UserDetail getUserDetailsByUserId(@Param(value = "id") Integer id);
+
+    UserDetail findByUserId(Integer user_id);
+    UserDetail findByUserEmail(String email);
 }

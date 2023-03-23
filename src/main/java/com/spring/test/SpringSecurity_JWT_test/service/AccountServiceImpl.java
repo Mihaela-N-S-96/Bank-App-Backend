@@ -5,7 +5,6 @@ import com.spring.test.SpringSecurity_JWT_test.model.Account;
 import com.spring.test.SpringSecurity_JWT_test.model.User;
 import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
 import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,33 +13,28 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.apache.naming.SelectorContext.prefix;
 
-@Transactional
 @Service
 public class AccountServiceImpl implements AccountService{
 
-//    @Autowired
-    private final UserRepository userRepository;
+    private   UserRepository userRepository;
 
-//    @Autowired
-    private final AccountRepository accountRepository;
+    private   AccountRepository accountRepository;
+
+
 
     public AccountServiceImpl(UserRepository userRepository, AccountRepository accountRepository) {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
     }
 
-    public String generateUniqueCode(){
-        Random rand = new Random();
-
-        long x = (long)(rand.nextDouble()*100000000000000L);
-
-        String code = String.valueOf(prefix) + String.format("%014d", x);
-        return code;
+    public boolean hasMoneyInAccount(Double value, Integer id_account){
+        if(accountRepository.getAccountById(id_account).getBalance() < value)
+            return false;
+        return true;
     }
 
-
+    @Transactional
     public Account saveAccount(Account account){
 
     try {
@@ -63,43 +57,58 @@ public class AccountServiceImpl implements AccountService{
     }
     }
 
-    public Optional<Account> findById(Integer id){
-
-        Optional<Account> account = accountRepository.findById(id);
-        return account;
-    }
-
-
+    @Transactional
     public void addValueToSavings(Double value, Integer account_id){
-        Account account = findById(account_id).get();
+        Account account = accountRepository.getAccountById(account_id);
         account.setSavings(account.getSavings() + value);
 
         accountRepository.save(account);
     }
 
+    @Transactional
+    public void decreasesValueFromSavings(Double value, Integer id_account){
+        try {
+            Account account = accountRepository.getAccountById(id_account);
+            account.setSavings(account.getSavings() - value);
 
+            accountRepository.save(account);
+        }catch (Exception e){
+            throw new RequestException("This withdraw can not be registered!");
+        }
+    }
+
+    @Transactional
     public void decreasesValueFromBalance(Double value, Integer id){
-        Account account = findById(id).get();
+        Account account = accountRepository.getAccountById(id);
         account.setBalance(account.getBalance() - value);
 
         accountRepository.save(account);
     }
 
+    @Transactional
+    public void updateTypeOfPlanByAccountId(Integer id_account, String type_of_plan){
+    Account account = accountRepository.getAccountById(id_account);
+    account.setType_of_plan(type_of_plan);
 
-    public void updateSavingsAccount(Double savings, Integer id){
-        accountRepository.updateSavingsAccount(savings, id);
+    accountRepository.save(account);
     }
 
 
-    public void  addValueToBalance(Double value, Integer id){
-        accountRepository.addValueToBalance(value, id);
+    @Transactional
+    public void increaseSavingsAccount(Double newValue, Integer id){
+     Account account = accountRepository.getAccountById(id);
+     account.setSavings(account.getSavings() + newValue);
+
+     accountRepository.save(account);
     }
-    public String getAccountType(Integer id){
 
-        Account account = new Account();
-        account = findById(id).get();
+    @Transactional
+    public void  addValueToBalance(Double value, Integer id_account){
+    Account account = accountRepository.getAccountById(id_account);
+    account.setBalance(account.getBalance() + value);
 
-        return account.getCurrency();
+    accountRepository.save(account);
+
     }
 
     public List<Account> getAccountsByUserId(Integer id){
@@ -107,8 +116,9 @@ public class AccountServiceImpl implements AccountService{
     }
 
 
+    @Transactional
     public HashMap<String,Object> editTypeOfPlanByAccountId(Integer id_account, String type_of_plan){
-         accountRepository.editTypeOfPlanByAccountId(id_account,type_of_plan );
+        updateTypeOfPlanByAccountId(id_account,type_of_plan );
 
          Account account = accountRepository.findById(id_account).get();
          Account responseAccount = new Account(account.getId(), account.getCurrency(), account.getSavings(), account.getDeposit(), account.getBalance(), account.getType_of_plan(), account.getCreated_at());
@@ -119,7 +129,7 @@ public class AccountServiceImpl implements AccountService{
          return responseEntity;
     }
 
-
+    @Transactional
     public ResponseEntity<?> deleteByAccountId(Integer id){
 
         try {

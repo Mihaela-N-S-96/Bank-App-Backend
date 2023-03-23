@@ -20,11 +20,10 @@ public class AccountController {
 
 
     private final AccountService accountService;
-    private final BalanceService balanceService;
 
-    public AccountController(AccountService accountService, BalanceService balanceService) {
+
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
-        this.balanceService = balanceService;
     }
 
     @GetMapping("/")
@@ -40,23 +39,23 @@ public class AccountController {
 
     @PostMapping("/savings")
     public void addToSavings(@RequestParam Double savings, @RequestParam Integer id){
-        accountService.updateSavingsAccount(savings, id);
+        accountService.increaseSavingsAccount(savings, id);
     }
 
-    @PostMapping("/deposit/balance")
-    public ResponseEntity<Object> addToBalance(@RequestBody Balance balance,
-                                               @RequestParam Integer id){
-
-
-        return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
-                                                                      HttpStatus.OK);
-    }
-
-    @GetMapping("/deposit/balance")
-    public List<Balance> addToBalance(@RequestParam Integer id){
-
-        return balanceService.getAllBalanceByAccountId(id);
-    }
+//    @PostMapping("/deposit/balance")
+//    public ResponseEntity<Object> addToBalance(@RequestBody Balance balance,
+//                                               @RequestParam Integer id){
+//
+//
+//        return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
+//                                                                      HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/deposit/balance")
+//    public List<Balance> addToBalance(@RequestParam Integer id){
+//
+//        return balanceService.getAllBalanceByAccountId(id);
+//    }
 
     @PatchMapping("/edit")
     public ResponseEntity<Object> editAccount(@RequestParam Integer id, @RequestParam String type){

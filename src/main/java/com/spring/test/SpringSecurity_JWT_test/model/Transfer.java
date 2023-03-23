@@ -3,14 +3,15 @@ package com.spring.test.SpringSecurity_JWT_test.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
 @JsonIgnoreProperties(value = {"account"})
-@Entity
-@Table(name="transfers")
+@Entity(name = "transfers")
+@Table(name = "transfers")
 public class Transfer {
 
     @Id
@@ -39,6 +40,7 @@ public class Transfer {
 
     @Column(name = "from_sender_name")
     private String from_sender_name;
+
     @Column(name = "to_account_id")
     private Integer to_account_id;
 

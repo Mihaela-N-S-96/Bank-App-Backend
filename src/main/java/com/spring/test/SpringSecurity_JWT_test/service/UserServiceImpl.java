@@ -30,8 +30,7 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserDetailRepository userDetailRepository;
 
-    @Autowired
-    private AccountServiceImpl accountService;
+
     public Account getAccountFromUser(User user, int index){
 
         List<Account> account = user.getAccount();

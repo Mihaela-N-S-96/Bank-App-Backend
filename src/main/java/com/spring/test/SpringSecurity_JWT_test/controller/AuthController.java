@@ -39,34 +39,6 @@ import javax.mail.MessagingException;
 public class AuthController {
 
     private static final Logger logger =  LoggerFactory.getLogger(AuthController.class);
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private OtpService otpService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private OtpRepository otpRepository;
-
-
 
     @Autowired
     private AuthService authService;

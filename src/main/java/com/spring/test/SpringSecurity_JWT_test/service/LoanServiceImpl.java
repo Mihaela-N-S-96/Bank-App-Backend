@@ -31,17 +31,19 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     public Loan saveLoan(Loan loan, Integer id_account){
      Optional<Account> account = accountRepository.findById(id_account);
 
      loan.setAccount(account.get());//convert Optional to Object -> account.get()
-accountRepository.addValueToBalance(loan.getLoan(), id_account);
-//        if(loanRepository.getSumOfPayByAccountId(id) == null )
+        accountService.addValueToBalance(loan.getLoan(), id_account);
+
             if(loan.getTotal_paid() == null)
             loan.setTotal_paid(0.0);
 
-//        else
-//     loan.setTotal_paid(loanRepository.getSumOfPayByAccountId(id)+ loan.getRate());
+
      loan = loanRepository.save(loan);
         return loan;
     }
