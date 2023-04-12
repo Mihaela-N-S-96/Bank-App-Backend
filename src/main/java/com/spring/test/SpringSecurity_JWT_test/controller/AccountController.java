@@ -42,20 +42,6 @@ public class AccountController {
         accountService.increaseSavingsAccount(savings, id);
     }
 
-//    @PostMapping("/deposit/balance")
-//    public ResponseEntity<Object> addToBalance(@RequestBody Balance balance,
-//                                               @RequestParam Integer id){
-//
-//
-//        return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
-//                                                                      HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/deposit/balance")
-//    public List<Balance> addToBalance(@RequestParam Integer id){
-//
-//        return balanceService.getAllBalanceByAccountId(id);
-//    }
 
     @PatchMapping("/edit")
     public ResponseEntity<Object> editAccount(@RequestParam Integer id, @RequestParam String type){

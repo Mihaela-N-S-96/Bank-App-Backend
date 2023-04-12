@@ -25,6 +25,7 @@ public class BalanceServiceImpl implements BalanceService{
     @Autowired
     private AccountServiceImpl accountService;
 
+
     public boolean validateBalance(Balance balance, Double value){
         if(value<= balance.getBalance())
             return true;

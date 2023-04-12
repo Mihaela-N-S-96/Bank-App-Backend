@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class SpringSecurityJwtTestApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(SpringSecurityJwtTestApplication.class, args);
 	}
 
