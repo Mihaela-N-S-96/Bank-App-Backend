@@ -1,51 +1,59 @@
 package com.spring.test.SpringSecurity_JWT_test.controller;
 
-import com.spring.test.SpringSecurity_JWT_test.exceptions.RequestException;
-import com.spring.test.SpringSecurity_JWT_test.model.*;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
-import com.spring.test.SpringSecurity_JWT_test.payload.response.JwtResponse;
-import com.spring.test.SpringSecurity_JWT_test.repository.AccountRepository;
-import com.spring.test.SpringSecurity_JWT_test.repository.OtpRepository;
-import com.spring.test.SpringSecurity_JWT_test.repository.RoleRepository;
-import com.spring.test.SpringSecurity_JWT_test.repository.UserRepository;
-import com.spring.test.SpringSecurity_JWT_test.security.jwt.JwtUtils;
-import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsImpl;
 import com.spring.test.SpringSecurity_JWT_test.service.AuthService;
-import com.spring.test.SpringSecurity_JWT_test.service.EmailService;
-import com.spring.test.SpringSecurity_JWT_test.service.OtpService;
-import com.spring.test.SpringSecurity_JWT_test.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.csrf.CsrfToken;
+
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import javax.mail.MessagingException;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
 @RequestMapping("/bank/auth")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
-public class AuthController {
+        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN"})
+public class AuthController extends BaseController{
 
     private static final Logger logger =  LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest)  {
+   @Autowired
+    private CsrfTokenRepository csrfTokenRepository;
 
+    @GetMapping("/csrf")
+    public ResponseEntity<String> getLoginPage(CsrfToken csrfToken, HttpServletRequest request, HttpServletResponse response) {
+        String token = csrfToken.getToken();
+        csrfTokenRepository.saveToken(csrfToken, request, response);
+        System.out.println("token= "+token);
+        return ResponseEntity.ok(token);
+    }
+    @PostMapping("/csrf/test")//CSRF-ON; authorization-OFF
+    public ResponseEntity<String> getUserPage(HttpServletRequest request) {
+        if (!isCsrfTokenValid(request)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok("Hello!");
+    }
+
+    @PostMapping("/signin")//CSRF-ON; authentication-OFF
+     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, HttpServletRequest request)  {
+        if (!isCsrfTokenValid(request)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try {
@@ -56,8 +64,11 @@ public class AuthController {
         return response;
     }
 
-    @PostMapping("/otp")
-    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException{
+    @PostMapping("/otp")//CSRF-ON; authentication-OFF
+    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException{
+        if (!isCsrfTokenValid(request)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try{
@@ -69,10 +80,14 @@ public class AuthController {
     }
 
 
-    @PostMapping("/validate")
-    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email) {
+    @PostMapping("/validate")//CSRF-ON; authentication-ON
+   // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, HttpServletRequest request) {
+        if (!isCsrfTokenValid(request)) {
+            return ResponseEntity.badRequest().build();
+        }
 
-      ResponseEntity<?> response;
+        ResponseEntity<?> response;
       try{
           response = authService.validateOtp(otpnum, email);
       }catch (Exception e){
@@ -82,8 +97,12 @@ public class AuthController {
       return response;
     }
 
-    @PostMapping("/resend/otp")
-    public ResponseEntity<?> resendOtp(@RequestParam  String email){
+    @PostMapping("/resend/otp")//CSRF-ON; authentication-ON
+   // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> resendOtp(@RequestParam  String email, HttpServletRequest request){
+        if (!isCsrfTokenValid(request)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try {
@@ -95,44 +114,3 @@ public class AuthController {
         return response;
     }
 }
-
-
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> registerUser( @RequestBody SignupRequest signUpRequest) {
-//        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-//            logger.warn("Username is already taken!");
-//            throw new RequestException("Username is already taken!");
-//        }
-//
-//        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-//            logger.warn("Email is already in use!");
-//            throw new RequestException("Email is already in use!");
-//        }
-//
-//        // Create new user's details
-//        User user = new User(signUpRequest.getUsername(),
-//                signUpRequest.getEmail(),
-//                encoder.encode(signUpRequest.getPassword()));
-//
-//        Set<Role> roles = new HashSet<>();
-//        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-//                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//        roles.add(userRole);
-//        user.setRoles(roles);
-//
-//
-//        List<Account> first = signUpRequest.getAccount();
-//        UserDetail userDetail = signUpRequest.getUserDetail();
-//
-//        user.setUserDetail(userDetail);
-//        user.setAccount(first);
-//
-//        try {
-//            userService.saveUser(user);
-//        }catch (RuntimeException ex){
-//            logger.warn("Success: User was saved!");
-//            return   ResponseEntity.status(HttpStatus.OK).body(ex.getMessage());
-//        }
-//        return   ResponseEntity.status(HttpStatus.OK).body("Success");
-//    }

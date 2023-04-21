@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,10 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import javax.sql.DataSource;
 
@@ -29,9 +34,13 @@ import javax.sql.DataSource;
         // securedEnabled = true,
         // jsr250Enabled = true,
         prePostEnabled = true)
+@EnableWebSecurity
 public class WebSecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
+//    @Autowired
+//    private CustomCsrfTokenRepository customCsrfTokenRepository;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -58,32 +67,36 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-XSRF-TOKEN");
+        return repository;
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.cors( c ->{
-//            CorsConfigurationSource cs = r ->{
-//
-//                CorsConfiguration cc = new CorsConfiguration();
-////                cc.setAllowedOrigins(List.of("http://localhost:3000"));
-////                cc.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH"));
-//                cc.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-//                cc.setAllowedMethods(Collections.singletonList("*"));
-//                cc.setAllowCredentials(true);
-//
-//                return cc;
-//            };
-//                 c.configurationSource(cs);
-//        });
 
-        http.cors().and().csrf().disable()
+
+        http.cors().and().csrf()//.disable()
 //                .requiresChannel().anyRequest().requiresSecure().and()//new added
+                .ignoringAntMatchers("/bank/auth/signin")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/bank/auth/**").permitAll()
+
+                .authorizeRequests()
+                .antMatchers("/bank/auth/csrf").permitAll()
+                .antMatchers("/bank/auth/csrf/test").permitAll()
+                .antMatchers("/bank/auth/signin").permitAll()
+                .antMatchers("/bank/auth/resend/otp").permitAll()
+                .antMatchers("/bank/auth/validate").permitAll()
+
                 .antMatchers("/bank/test/**").permitAll()
                 .antMatchers("/accounts/**").permitAll()
                 .antMatchers("/loans/**").permitAll()
@@ -93,12 +106,12 @@ public class WebSecurityConfig {
                 .antMatchers("/deposit/**").permitAll()
                 .antMatchers("/savings/**").permitAll()
                 .antMatchers("/balance/**").permitAll()
+
                 .anyRequest().authenticated();
 //.antMatchers("/user/**").permitAll()
         http.authenticationProvider(authenticationProvider());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
