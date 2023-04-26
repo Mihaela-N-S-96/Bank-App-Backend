@@ -12,8 +12,8 @@ public abstract class BaseController {
     private CsrfTokenRepository csrfTokenRepository;
 
     protected boolean isCsrfTokenValid(HttpServletRequest request) {
-//        CsrfToken csrfToken = csrfTokenRepository.loadToken(request);
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        CsrfToken csrfToken = csrfTokenRepository.loadToken(request);
+//        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         System.out.println("csrfToken = "+ csrfToken.getToken());
         if (csrfToken == null) {
             System.out.println("csrfToken este  null ");

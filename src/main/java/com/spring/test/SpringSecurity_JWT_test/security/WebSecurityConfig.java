@@ -74,6 +74,7 @@ public class WebSecurityConfig {
         CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
         repository.setCookieName("XSRF-TOKEN");
         repository.setCookieHttpOnly(false);
+        System.out.println("repository= "+ repository);
         return repository;
     }
 

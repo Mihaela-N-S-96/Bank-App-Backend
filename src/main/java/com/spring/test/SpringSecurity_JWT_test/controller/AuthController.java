@@ -38,9 +38,11 @@ public class AuthController extends BaseController{
     public ResponseEntity<String> getLoginPage(CsrfToken csrfToken, HttpServletRequest request, HttpServletResponse response) {
         String token = csrfToken.getToken();
         csrfTokenRepository.saveToken(csrfToken, request, response);
-        System.out.println("token= "+token);
+        System.out.println("token generat= "+token+ "---"+ csrfTokenRepository.loadToken(request));
         return ResponseEntity.ok(token);
     }
+
+
     @PostMapping("/csrf/test")//CSRF-ON; authorization-OFF
     public ResponseEntity<String> getUserPage(HttpServletRequest request) {
         if (!isCsrfTokenValid(request)) {
