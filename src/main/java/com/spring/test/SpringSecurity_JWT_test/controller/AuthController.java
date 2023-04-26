@@ -2,6 +2,7 @@ package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
+import com.spring.test.SpringSecurity_JWT_test.security.CustomCsrfTokenRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.AuthService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class AuthController extends BaseController{
     private AuthService authService;
 
    @Autowired
-    private CsrfTokenRepository csrfTokenRepository;
+    private CustomCsrfTokenRepository csrfTokenRepository;
 
     @GetMapping("/csrf")
     public ResponseEntity<String> getLoginPage(CsrfToken csrfToken, HttpServletRequest request, HttpServletResponse response) {
