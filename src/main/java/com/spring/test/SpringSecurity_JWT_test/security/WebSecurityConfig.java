@@ -37,6 +37,8 @@ public class WebSecurityConfig {
 
 //    @Autowired
 //    private CustomCsrfTokenRepository customCsrfTokenRepository;
+@Autowired
+private CsrfTokenRepository csrfTokenRepository;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -61,7 +63,10 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
+//    @Bean
+//    public CsrfTokenRepository csrfTokenRepository() {
+//        return new CustomCsrfTokenRepository();
+//    }
 //    @Bean
 //    public CsrfTokenRepository csrfTokenRepository() {
 //        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
@@ -69,14 +74,14 @@ public class WebSecurityConfig {
 //        return repository;
 //    }
 
-    @Bean
-    public CsrfTokenRepository csrfTokenRepository() {
-        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
-        repository.setCookieName("XSRF-TOKEN");
-        repository.setCookieHttpOnly(false);
-        System.out.println("repository= "+ repository);
-        return repository;
-    }
+//    @Bean
+//    public CsrfTokenRepository csrfTokenRepository() {
+//        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
+//        repository.setCookieName("XSRF-TOKEN");
+//        repository.setCookieHttpOnly(false);
+//        System.out.println("repository= "+ repository);
+//        return repository;
+//    }
 
 
     @Bean
@@ -91,7 +96,8 @@ public class WebSecurityConfig {
         http.cors().disable().csrf()//.disable()
 //                .requiresChannel().anyRequest().requiresSecure().and()//new added
                 .ignoringAntMatchers("/bank/auth/signin")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
 
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

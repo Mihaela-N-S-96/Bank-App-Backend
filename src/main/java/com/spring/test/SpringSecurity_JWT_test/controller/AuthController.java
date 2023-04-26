@@ -2,16 +2,13 @@ package com.spring.test.SpringSecurity_JWT_test.controller;
 
 import com.spring.test.SpringSecurity_JWT_test.payload.request.LoginRequest;
 import com.spring.test.SpringSecurity_JWT_test.payload.request.SignupRequest;
-import com.spring.test.SpringSecurity_JWT_test.security.CustomCsrfTokenRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.AuthService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 
-import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -19,42 +16,44 @@ import org.slf4j.Logger;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
 @RequestMapping("/bank/auth")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
         allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN"})
-public class AuthController extends BaseController{
+public class AuthController{
 
+    private static final String CSRF_TOKEN_ATTR_NAME = "_csrf";
+    private static final String CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
     private static final Logger logger =  LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService authService;
 
-   @Autowired
-    private CustomCsrfTokenRepository csrfTokenRepository;
-
     @GetMapping("/csrf")
-    public ResponseEntity<String> getLoginPage(CsrfToken csrfToken, HttpServletRequest request, HttpServletResponse response) {
-        String token = csrfToken.getToken();
-        csrfTokenRepository.saveToken(csrfToken, request, response);
-        System.out.println("token generat= "+token+ "---"+ csrfTokenRepository.loadToken(request));
-        return ResponseEntity.ok(token);
+    public ResponseEntity<String> getLoginPage(HttpServletRequest  request, HttpServletResponse response) {
+
+    CsrfToken csrfToken= (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
+        HttpSession session = request.getSession();
+        session.setAttribute(CSRF_TOKEN_ATTR_NAME, csrfToken);
+        return ResponseEntity.ok(csrfToken.getToken());
     }
 
 
-    @PostMapping("/csrf/test")//CSRF-ON; authorization-OFF
-    public ResponseEntity<String> getUserPage(HttpServletRequest request) {
-        if (!isCsrfTokenValid(request)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok("Hello!");
-    }
+//    @PostMapping("/csrf/test")//CSRF-ON; authorization-OFF
+//    public ResponseEntity<String> getUserPage(HttpServletRequest request) {
+//        if (!isCsrfTokenValid(request)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        return ResponseEntity.ok("Hello!");
+//    }
 
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
-     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, HttpServletRequest request)  {
-        if (!isCsrfTokenValid(request)) {
+     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {
+        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+        if (!sessionToken.equals(csrfTokenHeader)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -69,9 +68,6 @@ public class AuthController extends BaseController{
 
     @PostMapping("/otp")//CSRF-ON; authentication-OFF
     public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException{
-        if (!isCsrfTokenValid(request)) {
-            return ResponseEntity.badRequest().build();
-        }
 
         ResponseEntity<?> response;
         try{
@@ -86,9 +82,6 @@ public class AuthController extends BaseController{
     @PostMapping("/validate")//CSRF-ON; authentication-ON
    // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, HttpServletRequest request) {
-        if (!isCsrfTokenValid(request)) {
-            return ResponseEntity.badRequest().build();
-        }
 
         ResponseEntity<?> response;
       try{
@@ -103,9 +96,7 @@ public class AuthController extends BaseController{
     @PostMapping("/resend/otp")//CSRF-ON; authentication-ON
    // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> resendOtp(@RequestParam  String email, HttpServletRequest request){
-        if (!isCsrfTokenValid(request)) {
-            return ResponseEntity.badRequest().build();
-        }
+
 
         ResponseEntity<?> response;
         try {
