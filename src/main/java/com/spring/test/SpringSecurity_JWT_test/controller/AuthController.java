@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/bank/auth")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN"})
+        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class AuthController{
 
     private static final String CSRF_TOKEN_ATTR_NAME = "_csrf";
@@ -53,6 +53,7 @@ public class AuthController{
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
      public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {
         String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+
         if (!sessionToken.equals(csrfTokenHeader)) {
             return ResponseEntity.badRequest().build();
         }

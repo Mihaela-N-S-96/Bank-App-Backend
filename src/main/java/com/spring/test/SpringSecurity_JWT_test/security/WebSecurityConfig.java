@@ -37,8 +37,8 @@ public class WebSecurityConfig {
 
 //    @Autowired
 //    private CustomCsrfTokenRepository customCsrfTokenRepository;
-@Autowired
-private CsrfTokenRepository csrfTokenRepository;
+//@Autowired
+//private CsrfTokenRepository csrfTokenRepository;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -96,7 +96,7 @@ private CsrfTokenRepository csrfTokenRepository;
         http.cors().disable().csrf()//.disable()
 //                .requiresChannel().anyRequest().requiresSecure().and()//new added
                 .ignoringAntMatchers("/bank/auth/signin")
-                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
 
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
