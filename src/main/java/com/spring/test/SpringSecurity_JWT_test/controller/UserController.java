@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.PUT},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
+        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization","X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class UserController {
 
 
@@ -24,7 +24,6 @@ public class UserController {
     }
 
     @GetMapping("/all")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<User> getAllUsers(){
 
         return userService.getAllUsers();

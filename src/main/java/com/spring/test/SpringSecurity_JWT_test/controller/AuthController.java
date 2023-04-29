@@ -74,7 +74,7 @@ public class AuthController{
 
     @PostMapping("/validate")//CSRF-ON; authentication-ON
    // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, HttpServletRequest request) {
+    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email) {
 
         ResponseEntity<?> response;
       try{
@@ -87,8 +87,7 @@ public class AuthController{
     }
 
     @PostMapping("/resend/otp")//CSRF-ON; authentication-ON
-   // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> resendOtp(@RequestParam  String email, HttpServletRequest request){
+      public ResponseEntity<?> resendOtp(@RequestParam  String email){
 
 
         ResponseEntity<?> response;

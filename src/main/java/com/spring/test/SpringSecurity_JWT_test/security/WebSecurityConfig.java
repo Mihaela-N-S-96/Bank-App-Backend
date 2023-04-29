@@ -93,7 +93,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
-        http.cors().disable().csrf().disable()
+        http.cors().and().csrf().disable()
 //                .requiresChannel().anyRequest().requiresSecure().and()//new added
                // .ignoringAntMatchers("/bank/auth/signin")
                 //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -103,6 +103,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests()
+                .antMatchers("/bank/auth/**").permitAll()
                 .antMatchers("/bank/auth/csrf").permitAll()
                 .antMatchers("/bank/auth/csrf/test").permitAll()
                 .antMatchers("/bank/auth/signin").permitAll()
