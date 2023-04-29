@@ -43,12 +43,12 @@ public class AuthController{
 
 
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
-     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {
-        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
-
-        if (!sessionToken.equals(csrfTokenHeader)) {
-            return ResponseEntity.badRequest().build();
-        }
+     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest)  {//, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session
+//        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+//
+//        if (!sessionToken.equals(csrfTokenHeader)) {
+//            return ResponseEntity.badRequest().build();
+//        }
 
         ResponseEntity<?> response;
         try {
