@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/bank/auth")
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
+        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class AuthController{
 
     private static final String CSRF_TOKEN_ATTR_NAME = "_csrf";
@@ -35,9 +35,12 @@ public class AuthController{
     @GetMapping("/csrf")
     public ResponseEntity<String> getLoginPage(HttpServletRequest  request, HttpServletResponse response) {
 
-    CsrfToken csrfToken= (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
+        CsrfToken csrfToken= (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
+
         HttpSession session = request.getSession();
+        System.out.println("session id= "+ session.getId());
         session.setAttribute(CSRF_TOKEN_ATTR_NAME, csrfToken);
+        System.out.println("SESSION FORMAT: /n "+session);
         return ResponseEntity.ok(csrfToken.getToken());
     }
 
@@ -53,7 +56,7 @@ public class AuthController{
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
      public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {
         String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
-
+        System.out.println("session id pe sigIn= "+ session.getId());
         if (!sessionToken.equals(csrfTokenHeader)) {
             return ResponseEntity.badRequest().build();
         }

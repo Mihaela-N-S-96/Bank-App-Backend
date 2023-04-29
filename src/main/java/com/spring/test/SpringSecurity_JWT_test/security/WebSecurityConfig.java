@@ -119,6 +119,7 @@ public class WebSecurityConfig {
                 .antMatchers("/savings/**").permitAll()
                 .antMatchers("/balance/**").permitAll()
 
+
                 .anyRequest().authenticated();
 //.antMatchers("/user/**").permitAll()
         http.authenticationProvider(authenticationProvider());
