@@ -36,27 +36,16 @@ public class AuthController{
     public ResponseEntity<String> getLoginPage(HttpServletRequest  request, HttpServletResponse response) {
 
         CsrfToken csrfToken= (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
-
         HttpSession session = request.getSession();
-        System.out.println("session id= "+ session.getId());
         session.setAttribute(CSRF_TOKEN_ATTR_NAME, csrfToken);
-        System.out.println("SESSION FORMAT: /n "+session);
-        return ResponseEntity.ok(csrfToken.getToken());
+             return ResponseEntity.ok(csrfToken.getToken());
     }
 
-
-//    @PostMapping("/csrf/test")//CSRF-ON; authorization-OFF
-//    public ResponseEntity<String> getUserPage(HttpServletRequest request) {
-//        if (!isCsrfTokenValid(request)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok("Hello!");
-//    }
 
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
      public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {
         String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
-        System.out.println("session id pe sigIn= "+ session.getId());
+
         if (!sessionToken.equals(csrfTokenHeader)) {
             return ResponseEntity.badRequest().build();
         }
