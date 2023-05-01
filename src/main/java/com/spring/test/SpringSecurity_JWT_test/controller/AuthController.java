@@ -43,12 +43,12 @@ public class AuthController{
 
 
     @PostMapping("/signin")//CSRF-ON; authentication-OFF
-     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest)  {//, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session
-//        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
-//
-//        if (!sessionToken.equals(csrfTokenHeader)) {
-//            return ResponseEntity.badRequest().build();
-//        }
+     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session)  {//, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session
+        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+
+        if (!sessionToken.equals(csrfTokenHeader)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try {
@@ -60,7 +60,12 @@ public class AuthController{
     }
 
     @PostMapping("/otp")//CSRF-ON; authentication-OFF
-    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException{
+    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session) throws MessagingException, UnsupportedEncodingException{//
+        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+
+        if (!sessionToken.equals(csrfTokenHeader)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try{
@@ -74,7 +79,12 @@ public class AuthController{
 
     @PostMapping("/validate")//CSRF-ON; authentication-ON
    // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email) {
+    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session) {
+        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+
+        if (!sessionToken.equals(csrfTokenHeader)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
       try{
@@ -87,8 +97,12 @@ public class AuthController{
     }
 
     @PostMapping("/resend/otp")//CSRF-ON; authentication-ON
-      public ResponseEntity<?> resendOtp(@RequestParam  String email){
+      public ResponseEntity<?> resendOtp(@RequestParam  String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session){
+        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
 
+        if (!sessionToken.equals(csrfTokenHeader)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         ResponseEntity<?> response;
         try {

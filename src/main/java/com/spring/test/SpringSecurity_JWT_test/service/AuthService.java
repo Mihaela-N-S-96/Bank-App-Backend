@@ -133,16 +133,18 @@ public class AuthService {
             Otp otpObj = new Otp();
             otpObj.setOtpnum(otp);
             otpObj.setEmail(signUpRequest.getEmail());
-
             emailService.sendOTPEmail(signUpRequest.getUserDetail().getUser(), otp);
+
             otpRepository.save(otpObj);
+
 
     return ResponseEntity.status(HttpStatus.OK).body("Verify your email");
 
         } catch (MessagingException e) {
 
             throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
 
             throw new RuntimeException(e);
         }
