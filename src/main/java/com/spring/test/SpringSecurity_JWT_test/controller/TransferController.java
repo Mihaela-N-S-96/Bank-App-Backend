@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/transfers")
-@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
+//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
+//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class TransferController {
 
 

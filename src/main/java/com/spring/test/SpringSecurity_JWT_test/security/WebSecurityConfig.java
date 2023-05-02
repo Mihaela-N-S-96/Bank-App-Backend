@@ -1,5 +1,7 @@
 package com.spring.test.SpringSecurity_JWT_test.security;
 
+import com.spring.test.SpringSecurity_JWT_test.security.cors.CorsFilter;
+import com.spring.test.SpringSecurity_JWT_test.security.csrf.CsrfTokenFilter;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.AuthEntryPointJwt;
 import com.spring.test.SpringSecurity_JWT_test.security.jwt.AuthTokenFilter;
 import com.spring.test.SpringSecurity_JWT_test.security.service.UserDetailsServiceImpl;
@@ -19,10 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-
+import org.springframework.security.web.csrf.*;
 
 
 @Configuration
@@ -35,13 +34,17 @@ public class WebSecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
-//    @Autowired
-//    private CustomCsrfTokenRepository customCsrfTokenRepository;
-//@Autowired
-//private CsrfTokenRepository csrfTokenRepository;
+    @Autowired
+    CsrfTokenFilter csrfTokenFilter;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+
+    static final String[] IGNORE_AUTH_PATTERNS = new String[] {
+            "/bank/auth/csrf","/bank/auth/signin","/bank/auth/otp",
+            "/bank/auth/validate","/bank/auth/resend/otp","/bank/test/",
+            "/accounts/","/loans/","/withdrawals/","/exchanges/","/transfers/",
+            "/deposit/","/savings/","/balance/**"};
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -63,25 +66,6 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-//    @Bean
-//    public CsrfTokenRepository csrfTokenRepository() {
-//        return new CustomCsrfTokenRepository();
-//    }
-//    @Bean
-//    public CsrfTokenRepository csrfTokenRepository() {
-//        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-//        repository.setHeaderName("X-XSRF-TOKEN");
-//        return repository;
-//    }
-
-//    @Bean
-//    public CsrfTokenRepository csrfTokenRepository() {
-//        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
-//        repository.setCookieName("XSRF-TOKEN");
-//        repository.setCookieHttpOnly(false);
-//        System.out.println("repository= "+ repository);
-//        return repository;
-//    }
 
 
     @Bean
@@ -89,44 +73,44 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+//    @Bean
+//    public Filter csrfHeaderFilter() {
+//        return new OncePerRequestFilter() {
+//            @Override
+//            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+//                                            FilterChain filterChain) throws ServletException, IOException {
+//                CsrfToken csrfToken = (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
+//                if (csrfToken != null) {
+//                    response.setHeader(CSRF_TOKEN_HEADER_NAME, csrfToken.getToken());
+//                    HttpSession session = request.getSession();
+//                    session.setAttribute(CSRF_TOKEN_ATTR_NAME, csrfToken);
+//                }
+//                filterChain.doFilter(request, response);
+//            }
+//        };
+//    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-
-        http.cors().disable().csrf()//.disable()
-//                .requiresChannel().anyRequest().requiresSecure().and()//new added
-                .ignoringAntMatchers("/bank/auth/signin","/bank/auth/resend/otp","/bank/auth/validate")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        http
+        .cors().configurationSource(new CorsFilter())
                 .and()
+        .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+                .addFilterAfter(csrfTokenFilter, CsrfFilter.class)
 
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-
                 .authorizeRequests()
-                .antMatchers("/bank/auth/**").permitAll()
-                .antMatchers("/bank/auth/csrf").permitAll()
-                .antMatchers("/bank/auth/csrf/test").permitAll()
-                .antMatchers("/bank/auth/otp").permitAll()
-                .antMatchers("/bank/auth/signin").permitAll()
-                .antMatchers("/bank/auth/resend/otp").permitAll()
-                .antMatchers("/bank/auth/validate").permitAll()
-
-                .antMatchers("/bank/test/**").permitAll()
-                .antMatchers("/accounts/**").permitAll()
-                .antMatchers("/loans/**").permitAll()
-                .antMatchers("/withdrawals/**").permitAll()
-                .antMatchers("/exchanges/**").permitAll()
-                .antMatchers("/transfers/**").permitAll()
-                .antMatchers("/deposit/**").permitAll()
-                .antMatchers("/savings/**").permitAll()
-                .antMatchers("/balance/**").permitAll()
-
-
+                .antMatchers(IGNORE_AUTH_PATTERNS).permitAll()
                 .anyRequest().authenticated();
-//.antMatchers("/user/**").permitAll()
-        http.authenticationProvider(authenticationProvider());
 
+        http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

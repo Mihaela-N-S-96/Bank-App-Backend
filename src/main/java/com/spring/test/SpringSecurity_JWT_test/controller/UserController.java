@@ -12,8 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.PUT},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization","X-XSRF-TOKEN","X-CSRF-TOKEN"})
+//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.PUT},
+//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization","X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class UserController {
 
 

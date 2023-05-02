@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bank/test")
-@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-        allowCredentials = "false", allowedHeaders = {"Content-Type", "Authorization"})
+//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
+//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
 public class TestController {
     @GetMapping("/all")
     public String allAccess() {
