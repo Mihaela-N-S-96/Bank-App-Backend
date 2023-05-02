@@ -8,13 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static com.spring.test.SpringSecurity_JWT_test.controller.AuthController.CSRF_TOKEN_HEADER_NAME;
 
 @RestController
 @RequestMapping("/user")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.PUT},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization","X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class UserController {
+public class UserController extends CsrfController{
 
 
     private final UserService userService;
@@ -24,28 +25,40 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers(@RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                  HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return userService.getAllUsers();
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Object> getById(@PathVariable Integer id){
+    public ResponseEntity<Object> getById(@PathVariable Integer id,
+                                          @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                          HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return new ResponseEntity<>(userService.getUserLoginResponse(id), HttpStatus.OK);
     }
 
     @PutMapping("/edit/credentials")
-    public ResponseEntity<String> updateUserPassword(@RequestBody User user){
+    public ResponseEntity<String> updateUserPassword(@RequestBody User user,
+                                                     @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                                     HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         userService.editUserPassword(user);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity<String> editUserDetails(@RequestParam Integer id, @RequestBody UserDetail userDetail){
+    public ResponseEntity<String> editUserDetails(@RequestParam Integer id,
+                                                  @RequestBody UserDetail userDetail,
+                                                  @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                                  HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         userService.editUserDetailsByUserId(id, userDetail);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }

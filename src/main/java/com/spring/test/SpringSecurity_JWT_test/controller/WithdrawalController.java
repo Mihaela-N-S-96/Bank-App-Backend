@@ -4,11 +4,13 @@ import com.spring.test.SpringSecurity_JWT_test.model.Withdrawal;
 import com.spring.test.SpringSecurity_JWT_test.service.WithdrawalService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
+import static com.spring.test.SpringSecurity_JWT_test.controller.AuthController.CSRF_TOKEN_HEADER_NAME;
+
 @RestController
 @RequestMapping("/withdrawals")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class WithdrawalController {
+public class WithdrawalController extends CsrfController{
 
     private WithdrawalService withdrawalService;
 
@@ -17,8 +19,12 @@ public class WithdrawalController {
     }
 
     @PatchMapping("/withdrawal")
-    public Withdrawal addWithdrawal(@RequestBody Withdrawal withdrawal, @RequestParam Integer id){
+    public Withdrawal addWithdrawal(@RequestBody Withdrawal withdrawal,
+                                    @RequestParam Integer id,
+                                    @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                    HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         withdrawal = withdrawalService.saveWithdrawal(withdrawal, id);
 
 

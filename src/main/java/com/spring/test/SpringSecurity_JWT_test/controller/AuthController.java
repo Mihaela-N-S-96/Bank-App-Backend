@@ -8,21 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.csrf.CsrfToken;
-
 import org.springframework.web.bind.annotation.*;
-
 import org.slf4j.Logger;
 import javax.servlet.http.HttpSession;
 
 
 @RestController
 @RequestMapping("/bank/auth")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class AuthController{
+public class AuthController extends CsrfController{
 
-    private static final String CSRF_TOKEN_ATTR_NAME = "_csrf";
-    private static final String CSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
+
+    protected static final String CSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
     private static final Logger logger =  LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
@@ -38,12 +34,7 @@ public class AuthController{
                                                 @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
                                                 HttpSession session) throws Exception {//, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session
 
-        CsrfToken sessionToken = (CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME);
-
-        if (!sessionToken.getToken().equals(csrfToken)) {
-            throw new Exception("Invalid CSRF token");
-        }
-
+        validateCsrfToken(csrfToken, session);
         ResponseEntity<?> response;
         try {
             response = authService.authenticateSignIn(loginRequest);
@@ -54,13 +45,9 @@ public class AuthController{
     }
 
     @PostMapping("/otp")//CSRF-ON; authentication-OFF
-    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest , @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session) {//
-        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+    public ResponseEntity<?> registerUserAndSendOtp(@RequestBody SignupRequest signUpRequest , @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken, HttpSession session) throws Exception{//
 
-        if (!sessionToken.equals(csrfTokenHeader)) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        validateCsrfToken(csrfToken, session);
         ResponseEntity<?> response;
         try{
             response = authService.registerUserAndSendOtp(signUpRequest);
@@ -72,13 +59,9 @@ public class AuthController{
 
 
     @PostMapping("/validate")//CSRF-ON; authentication-ON
-    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session) {
-        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+    public ResponseEntity<?> validateOtp(@RequestParam String otpnum, @RequestParam String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken, HttpSession session) throws Exception{
 
-        if (!sessionToken.equals(csrfTokenHeader)) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        validateCsrfToken(csrfToken, session);
         ResponseEntity<?> response;
       try{
           response = authService.validateOtp(otpnum, email);
@@ -90,13 +73,9 @@ public class AuthController{
     }
 
     @PostMapping("/resend/otp")//CSRF-ON; authentication-ON
-      public ResponseEntity<?> resendOtp(@RequestParam  String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfTokenHeader, HttpSession session){
-        String sessionToken = ((CsrfToken) session.getAttribute(CSRF_TOKEN_ATTR_NAME)).getToken();
+      public ResponseEntity<?> resendOtp(@RequestParam  String email, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken, HttpSession session) throws Exception{
 
-        if (!sessionToken.equals(csrfTokenHeader)) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        validateCsrfToken(csrfToken, session);
         ResponseEntity<?> response;
         try {
            response = authService.resendOtp(email);

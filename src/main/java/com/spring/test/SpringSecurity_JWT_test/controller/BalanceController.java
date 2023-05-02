@@ -7,13 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static com.spring.test.SpringSecurity_JWT_test.controller.AuthController.CSRF_TOKEN_HEADER_NAME;
 
 @RestController
 @RequestMapping("/balance")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.DELETE},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class BalanceController {
+public class BalanceController extends CsrfController{
 
     private final BalanceService balanceService;
 
@@ -22,16 +23,20 @@ public class BalanceController {
     }
 
     @GetMapping("/")
-    public List<Balance> addToBalance(@RequestParam Integer id){
+    public List<Balance> addToBalance(@RequestParam Integer id, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                      HttpSession session) throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return balanceService.getAllBalanceByAccountId(id);
     }
 
     @PostMapping("/add")
     public ResponseEntity<Object> addToBalance(@RequestBody Balance balance,
-                                               @RequestParam Integer id){
+                                               @RequestParam Integer id, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                               HttpSession session) throws Exception{
 
 
+        validateCsrfToken(csrfToken, session);
         return new ResponseEntity<>(balanceService.getBalanceResponse(balance, id),
                 HttpStatus.OK);
     }

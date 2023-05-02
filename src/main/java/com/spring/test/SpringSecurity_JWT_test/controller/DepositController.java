@@ -8,13 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+
+import static com.spring.test.SpringSecurity_JWT_test.controller.AuthController.CSRF_TOKEN_HEADER_NAME;
 
 @RestController
 @RequestMapping("/deposit")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class DepositController {
+public class DepositController extends CsrfController{
 
     private final DepositService depositService;
 
@@ -26,15 +27,19 @@ public class DepositController {
 
 
     @GetMapping("/")
-    public ArrayList<Deposit> getAllDeposits(@RequestParam Integer id){
+    public ArrayList<Deposit> getAllDeposits(@RequestParam Integer id, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                             HttpSession session) throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return  depositService.getDepositList(id);
     }
 
     @PostMapping("/new")
     public ResponseEntity<Object> addDeposit(@RequestBody Deposit deposit,
-                                             @RequestParam Integer id){
+                                             @RequestParam Integer id, @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                             HttpSession session) throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return new ResponseEntity<>(depositService.getDepositResponse(deposit, id), HttpStatus.OK);
     }
 

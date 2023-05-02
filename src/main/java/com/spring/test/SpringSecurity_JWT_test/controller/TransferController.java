@@ -5,16 +5,18 @@ import com.spring.test.SpringSecurity_JWT_test.repository.TransferRepository;
 import com.spring.test.SpringSecurity_JWT_test.service.TransferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+
+import static com.spring.test.SpringSecurity_JWT_test.controller.AuthController.CSRF_TOKEN_HEADER_NAME;
+
 
 @RestController
 @RequestMapping("/transfers")
-//@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
-//        allowCredentials = "true", allowedHeaders = {"Content-Type", "Authorization", "X-XSRF-TOKEN","X-CSRF-TOKEN"})
-public class TransferController {
-
+public class TransferController extends CsrfController {
 
     private final TransferService transferService;
 
@@ -23,16 +25,22 @@ public class TransferController {
     }
 
     @GetMapping("/")
-    public ArrayList<Transfer> getAllTransfers(@RequestParam Integer id){
+    public ArrayList<Transfer> getAllTransfers(@RequestParam Integer id,
+                                               @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                               HttpSession session)throws Exception{
 
+        validateCsrfToken(csrfToken, session);
         return  transferService.getAllAccountIdTransfers(id);
     }
 
     @PostMapping("/transfer")
     public ResponseEntity<Object> addTransfer(@RequestBody Transfer transfer,
                                               @RequestParam Integer id,
-                                              @RequestParam String email){
+                                              @RequestParam String email,
+                                              @RequestHeader(CSRF_TOKEN_HEADER_NAME) String csrfToken,
+                                              HttpSession session)throws Exception {
 
+        validateCsrfToken(csrfToken, session);
         return  new ResponseEntity<>(transferService.getTransferResponse(
                                     transfer, id, email
         ), HttpStatus.OK);

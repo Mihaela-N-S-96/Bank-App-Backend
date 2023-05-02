@@ -42,9 +42,9 @@ public class WebSecurityConfig {
 
     static final String[] IGNORE_AUTH_PATTERNS = new String[] {
             "/bank/auth/csrf","/bank/auth/signin","/bank/auth/otp",
-            "/bank/auth/validate","/bank/auth/resend/otp","/bank/test/",
-            "/accounts/","/loans/","/withdrawals/","/exchanges/","/transfers/",
-            "/deposit/","/savings/","/balance/**"};
+            "/bank/auth/validate","/bank/auth/resend/otp","/bank/test/**",
+            "/accounts/**","/loans/**","/withdrawals/**","/exchanges/**","/transfers/**",
+            "/deposit/**","/savings/**","/balance/**"};
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -72,24 +72,6 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-//    @Bean
-//    public Filter csrfHeaderFilter() {
-//        return new OncePerRequestFilter() {
-//            @Override
-//            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-//                                            FilterChain filterChain) throws ServletException, IOException {
-//                CsrfToken csrfToken = (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTR_NAME);
-//                if (csrfToken != null) {
-//                    response.setHeader(CSRF_TOKEN_HEADER_NAME, csrfToken.getToken());
-//                    HttpSession session = request.getSession();
-//                    session.setAttribute(CSRF_TOKEN_ATTR_NAME, csrfToken);
-//                }
-//                filterChain.doFilter(request, response);
-//            }
-//        };
-//    }
 
 
     @Bean
